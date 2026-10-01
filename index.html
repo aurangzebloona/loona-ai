@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loona AI - Elite Business Assistant & Studio</title>
+    <title>Loona AI - Enterprise AI Assistant & Studio</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,9 +12,9 @@
             theme: {
                 extend: {
                     colors: {
-                        darkbg: '#121214',
-                        sidebarbg: '#18181b',
-                        panelbg: '#1e1e24',
+                        darkbg: '#0f1015',
+                        sidebarbg: '#14151a',
+                        panelbg: '#1a1b22',
                         accent: '#6366f1',
                         accenthover: '#4f46e5'
                     }
@@ -31,30 +31,31 @@
         body { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        ::-webkit-scrollbar-thumb { background: #2d2e38; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f404e; }
     </style>
 </head>
 <body class="bg-darkbg text-gray-100 h-screen flex overflow-hidden">
 
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="w-64 bg-sidebarbg border-r border-zinc-800 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
+    <aside id="sidebar" class="w-64 bg-sidebarbg border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
         <div class="p-4 flex flex-col gap-4">
+            <!-- Professional International Brand Logo (Minimalist Tech Hexagon) -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center shadow-md text-indigo-400 font-bold text-base tracking-tighter">
-                        LZ
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold text-sm tracking-wider">
+                        LA
                     </div>
                     <div>
                         <h1 class="font-bold text-base tracking-wide text-white">Loona AI</h1>
-                        <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold px-1.5 py-0.5 bg-indigo-500/10 rounded">Pro Executive</span>
+                        <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold px-1.5 py-0.5 bg-indigo-500/10 rounded">Enterprise</span>
                     </div>
                 </div>
                 <button onclick="toggleSidebar()" class="md:hidden text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
             <button onclick="startNewChat()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center gap-2.5 transition shadow-sm text-sm">
-                <i class="fa-solid fa-plus text-xs"></i> New Project / Chat
+                <i class="fa-solid fa-plus text-xs"></i> New Workspace / Chat
             </button>
 
             <div class="flex flex-col gap-1 mt-2">
@@ -82,10 +83,10 @@
             <div class="relative">
                 <button onclick="toggleProfileMenu()" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-zinc-800/80 transition">
                     <div class="flex items-center gap-3">
-                        <div id="user-avatar" class="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white">AZ</div>
+                        <div id="user-avatar" class="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white">LA</div>
                         <div class="text-left">
-                            <h4 id="user-display-name" class="text-xs font-semibold text-white">Aurang Zeb</h4>
-                            <span class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Pro Connected</span>
+                            <h4 id="user-display-name" class="text-xs font-semibold text-white">Loona Admin</h4>
+                            <span class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Enterprise Active</span>
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-up text-xs text-zinc-400"></i>
@@ -123,11 +124,11 @@
         <div id="tab-chat" class="tab-content flex-1 flex flex-col h-[calc(100%-3.5rem)] overflow-hidden">
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6 max-w-4xl mx-auto w-full">
                 <div id="welcome-banner" class="my-auto text-center py-12 px-4">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 mx-auto flex items-center justify-center shadow-xl text-indigo-400 font-bold text-2xl tracking-tighter mb-4">
-                        LZ
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white font-bold text-2xl tracking-wider mb-4">
+                        LA
                     </div>
-                    <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, Aurang Zeb!</h2>
-                    <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>
+                    <h2 class="text-2xl font-bold text-white mb-2">Welcome to Loona AI</h2>
+                    <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Your elite enterprise AI assistant and sales executive. How can we assist your business today?</p>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto text-left">
                         <div onclick="sendQuickPrompt('Aaj ke gold rates aur market trends ki tafseel batao')" class="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 cursor-pointer transition">
@@ -166,7 +167,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
                         <label class="text-xs font-semibold text-zinc-300">Website Prompt / Description</label>
-                        <textarea id="web-prompt" rows="5" class="bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. A modern luxury landing page for Loona Mart e-commerce store with product cards, hero banner, and contact form..."></textarea>
+                        <textarea id="web-prompt" rows="5" class="bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. A modern luxury landing page for e-commerce store with product cards and hero banner..."></textarea>
                     </div>
                     <button onclick="generateWebsite()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-lg">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Complete HTML Code
@@ -229,10 +230,6 @@
                     <label class="text-xs font-semibold text-zinc-300 mb-1 block">Google Gemini API Key</label>
                     <input id="api-key-input" type="password" placeholder="AIzaSy..." class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
                 </div>
-                <div>
-                    <label class="text-xs font-semibold text-zinc-300 mb-1 block">Your Name</label>
-                    <input id="setting-name-input" type="text" value="Aurang Zeb" class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                </div>
             </div>
             <div class="flex justify-end gap-2 pt-2 border-t border-zinc-800">
                 <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300">Cancel</button>
@@ -244,10 +241,7 @@
     <!-- SCRIPT -->
     <script>
         let userApiKey = localStorage.getItem('loona_api_key') || '';
-        let userName = localStorage.getItem('loona_username') || 'Aurang Zeb';
 
-        document.getElementById('setting-name-input').value = userName;
-        document.getElementById('user-display-name').innerText = userName;
         if(userApiKey) document.getElementById('api-key-input').value = userApiKey;
 
         function switchTab(tabId) {
@@ -273,12 +267,9 @@
 
         function saveSettings() {
             userApiKey = document.getElementById('api-key-input').value.trim();
-            userName = document.getElementById('setting-name-input').value.trim() || 'Aurang Zeb';
             localStorage.setItem('loona_api_key', userApiKey);
-            localStorage.setItem('loona_username', userName);
-            document.getElementById('user-display-name').innerText = userName;
             closeSettingsModal();
-            alert('Settings saved successfully!');
+            alert('API Key saved successfully!');
         }
 
         function toggleProfileMenu() {
@@ -288,9 +279,9 @@
         function startNewChat() {
             document.getElementById('chat-messages').innerHTML = 
                 '<div id="welcome-banner" class="my-auto text-center py-12 px-4">' +
-                '<div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 mx-auto flex items-center justify-center shadow-xl text-indigo-400 font-bold text-2xl tracking-tighter mb-4">LZ</div>' +
-                '<h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, ' + userName + '!</h2>' +
-                '<p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>' +
+                '<div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 mx-auto flex items-center justify-center shadow-xl text-white font-bold text-2xl tracking-wider mb-4">LA</div>' +
+                '<h2 class="text-2xl font-bold text-white mb-2">Welcome to Loona AI</h2>' +
+                '<p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Your elite enterprise AI assistant and sales executive. How can we assist your business today?</p>' +
                 '</div>';
         }
 
@@ -313,7 +304,7 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             var loadingId = 'loading-' + Date.now();
-            messagesDiv.innerHTML += '<div id="' + loadingId + '" class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs"><i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...</div></div>';
+            messagesDiv.innerHTML += '<div id="' + loadingId + '" class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs"><i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...</div></div>';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             var replyText = "";
@@ -339,7 +330,7 @@
             }
 
             document.getElementById(loadingId).remove();
-            messagesDiv.innerHTML += '<div class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs shadow-md"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">' + (typeof marked !== 'undefined' ? marked.parse(replyText) : replyText) + '</div></div>';
+            messagesDiv.innerHTML += '<div class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs shadow-md"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">' + (typeof marked !== 'undefined' ? marked.parse(replyText) : replyText) + '</div></div>';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
