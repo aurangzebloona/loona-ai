@@ -10,7 +10,7 @@
   html, body { height: 100%; }
   body {
     font-family: 'Google Sans', 'Segoe UI', Arial, sans-serif;
-    background: #ffffff;
+    background: linear-gradient(180deg, #f8fafd 0%, #eef4fd 100%);
     color: #1f1f1f;
     display: flex;
     overflow: hidden;
@@ -44,7 +44,7 @@
     font-size: 13px; color: #5f6368; font-weight: 500;
   }
   .sidebar-pill button.active {
-    background: #ffffff; color: #1f1f1f;
+    background: #ffffff; color: #1a73e8;
     box-shadow: 0 1px 3px rgba(0,0,0,.08);
   }
 
@@ -83,7 +83,6 @@
   main {
     flex: 1; display: flex; flex-direction: column;
     position: relative; overflow: hidden;
-    background: #ffffff;
   }
 
   .top-bar {
@@ -97,13 +96,14 @@
   }
   .icon-btn:hover { background: #f1f3f4; }
 
-  /* ============ CENTERED CHAT LAYOUT ============ */
+  /* ============ CENTER STAGE ============ */
   .center-stage {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    padding: 0 20px 120px;
+    padding: 0 20px 40px;
     overflow: hidden;
   }
+
   #chatScroll {
     width: 100%; max-width: 800px;
     max-height: 40vh; overflow-y: auto;
@@ -119,10 +119,14 @@
     letter-spacing: -1px;
     text-align: center;
     margin-bottom: 40px;
+    background: linear-gradient(90deg, #1a73e8 0%, #4285f4 40%, #9b72cb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .msg-user {
-    align-self: flex-end; background: #e8f0fe;
+    align-self: flex-end; background: #d2e3fc;
     padding: 12px 18px; border-radius: 20px;
     max-width: 500px; font-size: 15px; word-wrap: break-word;
     color: #1f1f1f;
@@ -132,54 +136,100 @@
     line-height: 1.6; white-space: pre-wrap; color: #1f1f1f;
   }
 
-  /* ============ INPUT BAR (centered, Gemini style) ============ */
+  /* ============ INPUT BAR ============ */
   .input-wrapper {
     width: 100%; max-width: 800px; position: relative;
   }
   .input-bar {
-    background: #f0f4f9;
+    background: #ffffff;
     border-radius: 999px;
     padding: 12px 22px;
     display: flex; align-items: center; gap: 12px;
     min-height: 56px;
-    transition: box-shadow .2s, background .2s;
+    box-shadow: 0 1px 3px rgba(60,64,67,.08), 0 4px 12px rgba(26,115,232,.08);
+    border: 1px solid #e0e7f0;
+    transition: box-shadow .2s, border-color .2s;
   }
-  .input-bar:hover { background: #e9eef5; }
+  .input-bar:hover {
+    box-shadow: 0 1px 3px rgba(60,64,67,.1), 0 6px 16px rgba(26,115,232,.14);
+  }
   .input-bar:focus-within {
-    background: #ffffff;
-    box-shadow: 0 1px 6px rgba(32,33,36,.28);
+    border-color: #1a73e8;
+    box-shadow: 0 1px 3px rgba(60,64,67,.1), 0 6px 20px rgba(26,115,232,.22);
   }
   .input-bar .plus {
     width: 28px; height: 28px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    color: #5f6368; font-size: 18px; flex-shrink: 0;
+    color: #1a73e8; font-size: 18px; flex-shrink: 0;
     transition: background .15s;
   }
-  .input-bar .plus:hover { background: #e4e8ed; }
+  .input-bar .plus:hover { background: #e8f0fe; }
   .input-bar input {
     flex: 1; border: none; outline: none; background: transparent;
     font-size: 15px; color: #1f1f1f; font-family: inherit;
     padding: 4px 0;
   }
   .input-bar input::placeholder { color: #5f6368; }
+
+  /* Model pill */
+  .model-wrapper { position: relative; }
   .input-bar .model-btn {
     display: flex; align-items: center; gap: 5px;
-    font-size: 13px; color: #1f1f1f; padding: 6px 10px;
+    font-size: 13px; color: #1a73e8; padding: 6px 12px;
     border-radius: 999px; font-weight: 500;
+    background: #e8f0fe;
   }
-  .input-bar .model-btn:hover { background: #e4e8ed; }
+  .input-bar .model-btn:hover { background: #d2e3fc; }
+
+  .model-menu {
+    display: none; position: absolute;
+    bottom: calc(100% + 10px); right: 0;
+    background: #fff; border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.08);
+    width: 260px; padding: 8px; z-index: 700;
+    border: 1px solid #e0e7f0;
+  }
+  .model-menu.show { display: block; }
+
+  .model-menu-title {
+    font-size: 11px; font-weight: 600;
+    color: #5f6368; text-transform: uppercase;
+    letter-spacing: .5px; padding: 8px 12px 4px;
+  }
+  .model-option {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 14px; border-radius: 12px;
+    font-size: 14px; color: #1f1f1f;
+    width: 100%; text-align: left;
+    transition: background .12s;
+  }
+  .model-option:hover { background: #f1f3f4; }
+  .model-option.selected {
+    background: #e8f0fe; color: #1a73e8; font-weight: 500;
+  }
+  .model-option .check {
+    color: #1a73e8; font-size: 14px;
+    visibility: hidden;
+  }
+  .model-option.selected .check { visibility: visible; }
+  .model-option i:first-child {
+    width: 20px; text-align: center; margin-right: 10px;
+  }
+  .model-option .label {
+    display: flex; align-items: center; flex: 1;
+  }
+
   .input-bar .mic, .input-bar .send {
     width: 34px; height: 34px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     color: #5f6368; font-size: 15px; transition: background .15s;
   }
-  .input-bar .mic:hover { background: #e4e8ed; }
+  .input-bar .mic:hover { background: #e8f0fe; color: #1a73e8; }
   .input-bar .send {
     background: #1a73e8; color: #ffffff;
     width: 38px; height: 38px; font-size: 14px;
   }
   .input-bar .send:hover { background: #1557b0; }
-  .input-bar .send.recording { background: #d93025; }
 
   /* ============ PLUS MENU ============ */
   .plus-menu {
@@ -188,6 +238,7 @@
     background: #fff; border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,.15), 0 2px 6px rgba(0,0,0,.06);
     width: 300px; padding: 10px; z-index: 500;
+    border: 1px solid #e0e7f0;
   }
   .plus-menu.show { display: block; }
 
@@ -212,6 +263,7 @@
     background: #fff; border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,.15);
     width: 260px; padding: 10px; z-index: 600;
+    border: 1px solid #e0e7f0;
   }
   .has-sub:hover .sub-menu { display: block; }
   .sub-menu .menu-item { font-size: 13.5px; }
@@ -302,7 +354,6 @@
   .modal-box input:focus { border-color: #1a73e8; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
 
-  /* Mobile */
   @media (max-width: 768px) {
     #sidebar {
       position: absolute; z-index: 100;
@@ -371,7 +422,7 @@
     </button>
   </div>
 
-  <!-- CENTER STAGE (Welcome + Chat + Input) -->
+  <!-- CENTER STAGE -->
   <div class="center-stage">
 
     <div id="chatScroll"></div>
@@ -388,12 +439,10 @@
           <i class="fa-solid fa-arrow-up-from-bracket m-icon ic-blue"></i>
           <span>Upload files</span>
         </button>
-
         <button id="btnDrive" class="menu-item">
           <i class="fa-brands fa-google-drive m-icon ic-green"></i>
           <span>Add from Drive</span>
         </button>
-
         <div class="has-sub">
           <button class="menu-item" style="justify-content: space-between;">
             <span style="display: flex; align-items: center; gap: 14px;">
@@ -417,29 +466,23 @@
             </button>
           </div>
         </div>
-
         <hr class="menu-divider">
-
         <button id="btnImage" class="menu-item">
           <i class="fa-solid fa-image m-icon ic-blue"></i>
           <span>Create image</span>
         </button>
-
         <button class="menu-item alert-btn" data-msg="Video creation tool active!">
           <i class="fa-solid fa-clapperboard m-icon ic-red"></i>
           <span>Create video</span>
         </button>
-
         <button class="menu-item alert-btn" data-msg="Music studio active!">
           <i class="fa-solid fa-music m-icon ic-cyan"></i>
           <span>Create music</span>
         </button>
-
         <button id="btnCanvas" class="menu-item">
           <i class="fa-solid fa-palette m-icon ic-purple"></i>
           <span>Canvas</span>
         </button>
-
         <div class="has-sub">
           <button class="menu-item" style="justify-content: space-between;">
             <span style="display: flex; align-items: center; gap: 14px;">
@@ -474,10 +517,61 @@
           <i class="fa-solid fa-plus"></i>
         </button>
         <input id="chatInput" placeholder="Ask Loona" autocomplete="off">
-        <button id="modelBtn" class="model-btn">
-          <span id="modelName">Flash-Lite</span>
-          <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
-        </button>
+
+        <!-- MODEL PILL + MENU -->
+        <div class="model-wrapper">
+          <button id="modelBtn" class="model-btn">
+            <span id="modelName">Flash-Lite</span>
+            <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+          </button>
+
+          <div id="modelMenu" class="model-menu">
+            <div class="model-menu-title">Choose a model</div>
+
+            <button class="model-option selected" data-model="Flash-Lite">
+              <span class="label">
+                <i class="fa-solid fa-bolt ic-yellow"></i>
+                Flash-Lite
+              </span>
+              <i class="fa-solid fa-check check"></i>
+            </button>
+
+            <button class="model-option" data-model="3.5 Flash">
+              <span class="label">
+                <i class="fa-solid fa-bolt ic-blue"></i>
+                3.5 Flash
+              </span>
+              <i class="fa-solid fa-check check"></i>
+            </button>
+
+            <button class="model-option" data-model="3.1 Pro">
+              <span class="label">
+                <i class="fa-solid fa-star ic-purple"></i>
+                3.1 Pro
+              </span>
+              <i class="fa-solid fa-check check"></i>
+            </button>
+
+            <button class="model-option" data-model="Extended Thinking">
+              <span class="label">
+                <i class="fa-solid fa-brain ic-blue"></i>
+                Extended Thinking
+              </span>
+              <i class="fa-solid fa-check check"></i>
+            </button>
+
+            <hr class="menu-divider">
+
+            <button class="model-option" data-model="Deep Research">
+              <span class="label">
+                <i class="fa-solid fa-magnifying-glass ic-green"></i>
+                Deep Research
+              </span>
+              <i class="fa-solid fa-check check"></i>
+            </button>
+          </div>
+        </div>
+
         <button id="voiceBtn" class="mic" title="Use microphone">
           <i class="fa-solid fa-microphone"></i>
         </button>
@@ -532,14 +626,38 @@
   $("plusBtn").addEventListener("click", function (e) {
     e.stopPropagation();
     $("plusMenu").classList.toggle("show");
+    $("modelMenu").classList.remove("show");
   });
   document.addEventListener("click", function (e) {
     if (!e.target.closest("#plusMenu") && e.target !== $("plusBtn")) {
       $("plusMenu").classList.remove("show");
     }
+    if (!e.target.closest("#modelMenu") && !e.target.closest("#modelBtn")) {
+      $("modelMenu").classList.remove("show");
+    }
   });
 
-  /* ============ UPLOAD FILES ============ */
+  /* ============ MODEL MENU ============ */
+  $("modelBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    $("modelMenu").classList.toggle("show");
+    $("plusMenu").classList.remove("show");
+  });
+
+  document.querySelectorAll(".model-option").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var name = this.getAttribute("data-model");
+      $("modelName").textContent = name;
+      document.querySelectorAll(".model-option").forEach(function (b) {
+        b.classList.remove("selected");
+      });
+      this.classList.add("selected");
+      $("modelMenu").classList.remove("show");
+    });
+  });
+
+  /* ============ UPLOAD ============ */
   $("btnUpload").addEventListener("click", function (e) {
     e.stopPropagation();
     $("fileInput").click();
@@ -553,7 +671,7 @@
     $("plusMenu").classList.remove("show");
   });
 
-  /* ============ ADD FROM DRIVE ============ */
+  /* ============ DRIVE ============ */
   $("btnDrive").addEventListener("click", function (e) {
     e.stopPropagation();
     alert("Google Drive integration connected!\n\n(Aap yahan apni Drive files browse kar sakte hain)");
@@ -631,103 +749,4 @@
   });
   $("labToggle").addEventListener("click", function (e) { e.stopPropagation(); });
 
-  /* ============ SIDEBAR ============ */
-  $("sidebarToggle").addEventListener("click", function () {
-    $("sidebar").classList.toggle("open");
-  });
-
-  /* ============ NEW CHAT ============ */
-  function removeWelcome() {
-    var w = $("welcome");
-    if (w) w.remove();
-  }
-  function showWelcome() {
-    if (!$("welcome")) {
-      var w = document.createElement("div");
-      w.id = "welcome";
-      w.className = "welcome";
-      w.innerHTML = '<h1>What\'s next, Aurang?</h1>';
-      var wrapper = document.querySelector(".input-wrapper");
-      wrapper.parentNode.insertBefore(w, wrapper);
-    }
-  }
-  function newChat() {
-    $("chatScroll").innerHTML = "";
-    showWelcome();
-  }
-  $("newChatBtn").addEventListener("click", newChat);
-  $("newChatTop").addEventListener("click", newChat);
-
-  /* ============ SETTINGS ============ */
-  $("openSettings").addEventListener("click", function () { $("settingsModal").classList.add("show"); });
-  $("closeSettings").addEventListener("click", function () { $("settingsModal").classList.remove("show"); });
-  $("saveSettings").addEventListener("click", function () {
-    userApiKey = $("apiKey").value.trim();
-    localStorage.setItem('loona_api_key', userApiKey);
-    $("settingsModal").classList.remove("show");
-    alert("Saved!");
-  });
-
-  /* ============ SEND MESSAGE ============ */
-  $("sendBtn").addEventListener("click", function () {
-    var text = $("chatInput").value.trim();
-    if (!text) return;
-    $("chatInput").value = "";
-    removeWelcome();
-
-    var userDiv = document.createElement("div");
-    userDiv.className = "msg-user";
-    userDiv.textContent = text;
-    $("chatScroll").appendChild(userDiv);
-
-    var botDiv = document.createElement("div");
-    botDiv.className = "msg-bot";
-    botDiv.textContent = "Soch raha hoon...";
-    $("chatScroll").appendChild(botDiv);
-    $("chatScroll").scrollTop = $("chatScroll").scrollHeight;
-
-    fetch("https://text.pollinations.ai/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "openai",
-        messages: [
-          { role: "system", content: "You are Loona AI, a helpful assistant." },
-          { role: "user", content: text }
-        ]
-      })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
-      botDiv.textContent = d.choices[0].message.content;
-      $("chatScroll").scrollTop = $("chatScroll").scrollHeight;
-    })
-    .catch(function () { botDiv.textContent = "Network error. Dobara try karein."; });
-  });
-
-  $("chatInput").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") { e.preventDefault(); $("sendBtn").click(); }
-  });
-
-  /* ============ VOICE ============ */
-  $("voiceBtn").addEventListener("click", function () {
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert("Voice input Chrome mein chalega."); return; }
-    var rec = new SR();
-    rec.lang = "ur-PK";
-    rec.onresult = function (e) { $("chatInput").value = e.results[0][0].transcript; };
-    rec.start();
-  });
-
-  /* ============ MODEL PILL ============ */
-  $("modelBtn").addEventListener("click", function () {
-    var models = ["Flash-Lite", "3.5 Flash", "3.1 Pro", "Extended Thinking"];
-    var idx = models.indexOf($("modelName").textContent);
-    $("modelName").textContent = models[(idx + 1) % models.length];
-  });
-
-  console.log("✅ Loona ready — Gemini-style layout");
-})();
-</script>
-</body>
-</html>
+  /* ============ SIDEB
