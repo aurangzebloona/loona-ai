@@ -25,7 +25,7 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -37,11 +37,9 @@
 </head>
 <body class="bg-darkbg text-gray-100 h-screen flex overflow-hidden">
 
-    <!-- SIDEBAR (Claude / ChatGPT Pro Style) -->
+    <!-- SIDEBAR -->
     <aside id="sidebar" class="w-64 bg-sidebarbg border-r border-zinc-800 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
-        <!-- Top Section -->
         <div class="p-4 flex flex-col gap-4">
-            <!-- Brand Logo (Professional Claude/ChatGPT Minimalist Geometric Style) -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center shadow-md text-indigo-400 font-bold text-base tracking-tighter">
@@ -55,12 +53,10 @@
                 <button onclick="toggleSidebar()" class="md:hidden text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
-            <!-- New Chat Button -->
             <button onclick="startNewChat()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center gap-2.5 transition shadow-sm text-sm">
                 <i class="fa-solid fa-plus text-xs"></i> New Project / Chat
             </button>
 
-            <!-- Navigation Tabs -->
             <div class="flex flex-col gap-1 mt-2">
                 <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-zinc-800/80 text-white transition">
                     <i class="fa-solid fa-comments w-5 text-indigo-400"></i> AI Assistant
@@ -77,15 +73,11 @@
             </div>
         </div>
 
-        <!-- Chat History List -->
         <div class="flex-1 overflow-y-auto px-4 py-2 border-t border-zinc-800/50">
             <span class="text-xs font-semibold text-zinc-500 uppercase tracking-wider px-1">Recent Sessions</span>
-            <div id="chat-history" class="flex flex-col gap-1 mt-2">
-                <!-- Dynamic history items will appear here -->
-            </div>
+            <div id="chat-history" class="flex flex-col gap-1 mt-2"></div>
         </div>
 
-        <!-- User Profile & Settings Footer -->
         <div class="p-4 border-t border-zinc-800 bg-zinc-900/50">
             <div class="relative">
                 <button onclick="toggleProfileMenu()" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-zinc-800/80 transition">
@@ -99,7 +91,6 @@
                     <i class="fa-solid fa-chevron-up text-xs text-zinc-400"></i>
                 </button>
 
-                <!-- Profile Popover Menu -->
                 <div id="profile-menu" class="hidden absolute bottom-14 left-0 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-2 flex flex-col gap-1 z-50">
                     <button onclick="openSettingsModal()" class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-zinc-800 text-zinc-200 flex items-center gap-2"><i class="fa-solid fa-gear text-indigo-400"></i> API & Settings</button>
                     <button onclick="clearAllData()" class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-red-500/10 text-red-400 flex items-center gap-2"><i class="fa-solid fa-trash"></i> Clear History</button>
@@ -108,10 +99,8 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT AREA -->
+    <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col h-full bg-darkbg relative overflow-hidden">
-        
-        <!-- Top Header Bar -->
         <header class="h-14 border-b border-zinc-800 flex items-center justify-between px-4 bg-darkbg/80 backdrop-blur z-20">
             <div class="flex items-center gap-3">
                 <button onclick="toggleSidebar()" class="text-zinc-400 hover:text-white md:hidden text-lg"><i class="fa-solid fa-bars"></i></button>
@@ -130,11 +119,9 @@
             </div>
         </header>
 
-        <!-- TAB 1: AI CHAT INTERFACE -->
+        <!-- TAB 1 -->
         <div id="tab-chat" class="tab-content flex-1 flex flex-col h-[calc(100%-3.5rem)] overflow-hidden">
-            <!-- Messages Container -->
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6 max-w-4xl mx-auto w-full">
-                <!-- Welcome Banner -->
                 <div id="welcome-banner" class="my-auto text-center py-12 px-4">
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 mx-auto flex items-center justify-center shadow-xl text-indigo-400 font-bold text-2xl tracking-tighter mb-4">
                         LZ
@@ -155,7 +142,6 @@
                 </div>
             </div>
 
-            <!-- Chat Input Footer -->
             <div class="p-4 bg-darkbg border-t border-zinc-800">
                 <div class="max-w-4xl mx-auto bg-zinc-900 border border-zinc-700/80 rounded-2xl p-2 shadow-lg focus-within:border-indigo-500 transition">
                     <textarea id="user-input" rows="1" placeholder="Type your message or project inquiry..." class="w-full bg-transparent text-sm text-white px-3 py-1.5 focus:outline-none resize-none max-h-32"></textarea>
@@ -170,7 +156,7 @@
             </div>
         </div>
 
-        <!-- TAB 2: WEBSITE BUILDER -->
+        <!-- TAB 2 -->
         <div id="tab-website" class="tab-content hidden flex-1 flex flex-col md:flex-row h-[calc(100%-3.5rem)]">
             <div class="w-full md:w-1/2 p-6 border-r border-zinc-800 flex flex-col justify-between overflow-y-auto">
                 <div class="flex flex-col gap-4">
@@ -186,9 +172,6 @@
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Complete HTML Code
                     </button>
                 </div>
-                <div class="mt-4 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                    <span class="text-[11px] text-zinc-400">Tip: You can download the generated HTML file and host it directly on GitHub Pages or Netlify.</span>
-                </div>
             </div>
             <div class="w-full md:w-1/2 flex flex-col bg-zinc-950">
                 <div class="h-10 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4">
@@ -201,19 +184,17 @@
             </div>
         </div>
 
-        <!-- TAB 3: IMAGE STUDIO -->
+        <!-- TAB 3 -->
         <div id="tab-image" class="tab-content hidden flex-1 flex flex-col p-6 max-w-4xl mx-auto w-full overflow-y-auto">
             <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-wand-magic-sparkles text-amber-400 mr-2"></i> AI Image Generation Studio</h2>
             <p class="text-xs text-zinc-400 mb-6">Create stunning graphic assets, logos, and portrait visuals using high-end AI prompts.</p>
-            
             <div class="flex flex-col gap-4 bg-zinc-900 p-5 rounded-2xl border border-zinc-800 mb-6">
                 <label class="text-xs font-semibold text-zinc-300">Image Prompt Description</label>
                 <div class="flex gap-2">
-                    <input id="image-prompt-input" type="text" placeholder="e.g. Futuristic luxury tech logo with crescent moon and neon glow, 8k resolution..." class="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <input id="image-prompt-input" type="text" placeholder="e.g. Futuristic luxury tech logo..." class="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
                     <button onclick="generateImage()" class="bg-amber-600 hover:bg-amber-500 text-white px-5 py-2.5 rounded-xl text-xs font-medium transition shadow-md">Generate</button>
                 </div>
             </div>
-
             <div id="image-result-container" class="flex-1 flex items-center justify-center border-2 border-dashed border-zinc-800 rounded-2xl bg-zinc-900/30 min-h-[300px]">
                 <div class="text-center text-zinc-500">
                     <i class="fa-solid fa-image text-4xl mb-2"></i>
@@ -222,21 +203,18 @@
             </div>
         </div>
 
-        <!-- TAB 4: CODE STUDIO -->
+        <!-- TAB 4 -->
         <div id="tab-code" class="tab-content hidden flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full overflow-y-auto">
             <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-code text-cyan-400 mr-2"></i> Advanced Code Assistant</h2>
             <p class="text-xs text-zinc-400 mb-4">Generate Python, Flask, JavaScript, or React scripts with expert precision.</p>
-            
             <div class="flex flex-col gap-3 flex-1">
-                <textarea id="code-prompt" rows="4" placeholder="Describe the script or bug you want solved..." class="bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500"></textarea>
+                <textarea id="code-prompt" rows="4" placeholder="Describe the script..." class="bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500"></textarea>
                 <button onclick="generateCodeSnippet()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-2 px-4 rounded-xl text-xs w-fit transition shadow-md">Generate Code</button>
-                
                 <div class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl p-4 overflow-x-auto mt-2">
                     <pre><code id="code-output-box" class="text-xs text-emerald-400 font-mono">// Generated code snippet will appear here...</code></pre>
                 </div>
             </div>
         </div>
-
     </main>
 
     <!-- SETTINGS MODAL -->
@@ -250,7 +228,6 @@
                 <div>
                     <label class="text-xs font-semibold text-zinc-300 mb-1 block">Google Gemini API Key</label>
                     <input id="api-key-input" type="password" placeholder="AIzaSy..." class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                    <span class="text-[10px] text-zinc-500 mt-1 block">Your key is stored securely in your browser storage only.</span>
                 </div>
                 <div>
                     <label class="text-xs font-semibold text-zinc-300 mb-1 block">Your Name</label>
@@ -264,9 +241,8 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- SCRIPT -->
     <script>
-        let chatHistoryData = JSON.parse(localStorage.getItem('loona_chats') || '[]');
         let userApiKey = localStorage.getItem('loona_api_key') || '';
         let userName = localStorage.getItem('loona_username') || 'Aurang Zeb';
 
@@ -275,13 +251,13 @@
         if(userApiKey) document.getElementById('api-key-input').value = userApiKey;
 
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(el => {
+            document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.add('hidden'); });
+            document.querySelectorAll('.nav-btn').forEach(function(el) {
                 el.classList.remove('bg-zinc-800', 'text-white');
                 el.classList.add('text-zinc-400');
             });
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-            const btn = document.getElementById('nav-' + tabId);
+            var btn = document.getElementById('nav-' + tabId);
             if(btn) {
                 btn.classList.add('bg-zinc-800/80', 'text-white');
                 btn.classList.remove('text-zinc-400');
@@ -289,8 +265,7 @@
         }
 
         function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            sb.classList.toggle('-translate-x-full');
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
         }
 
         function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
@@ -307,20 +282,16 @@
         }
 
         function toggleProfileMenu() {
-            const menu = document.getElementById('profile-menu');
-            menu.classList.toggle('hidden');
+            document.getElementById('profile-menu').classList.toggle('hidden');
         }
 
         function startNewChat() {
-            document.getElementById('chat-messages').innerHTML = `
-                <div id="welcome-banner" class="my-auto text-center py-12 px-4">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 mx-auto flex items-center justify-center shadow-xl text-indigo-400 font-bold text-2xl tracking-tighter mb-4">
-                        LZ
-                    </div>
-                    <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, ${userName}!</h2>
-                    <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>
-                </div>
-            `;
+            document.getElementById('chat-messages').innerHTML = 
+                '<div id="welcome-banner" class="my-auto text-center py-12 px-4">' +
+                '<div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 mx-auto flex items-center justify-center shadow-xl text-indigo-400 font-bold text-2xl tracking-tighter mb-4">LZ</div>' +
+                '<h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, ' + userName + '!</h2>' +
+                '<p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>' +
+                '</div>';
         }
 
         function sendQuickPrompt(txt) {
@@ -329,128 +300,75 @@
         }
 
         async function handleSendMessage() {
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
+            var input = document.getElementById('user-input');
+            var text = input.value.trim();
             if(!text) return;
 
-            const banner = document.getElementById('welcome-banner');
+            var banner = document.getElementById('welcome-banner');
             if(banner) banner.remove();
 
-            const messagesDiv = document.getElementById('chat-messages');
-            
-            // User bubble
-            messagesDiv.innerHTML += `
-                <div class="flex gap-3 justify-end">
-                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-xl text-xs leading-relaxed shadow-md">
-                        ${escapeHtml(text)}
-                    </div>
-                </div>
-            `;
+            var messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML += '<div class="flex gap-3 justify-end"><div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-xl text-xs leading-relaxed shadow-md">' + escapeHtml(text) + '</div></div>';
             input.value = '';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-            // Loading bubble
-            const loadingId = 'loading-' + Date.now();
-            messagesDiv.innerHTML += `
-                <div id="${loadingId}" class="flex gap-3 items-start">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs"><i class="fa-solid fa-moon"></i></div>
-                    <div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs">
-                        <i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...
-                    </div>
-                </div>
-            `;
+            var loadingId = 'loading-' + Date.now();
+            messagesDiv.innerHTML += '<div id="' + loadingId + '" class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs"><i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...</div></div>';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-            let replyText = "";
+            var replyText = "";
             if (!userApiKey) {
-                replyText = `Assalam-o-Alaikum! Main aap ka elite business executive hoon. Aap ne kaha: "${text}". *(Note: Live Gemini API key set nahi hai. Settings icon par click karke apni free Gemini API key enter karein taake live AI responses mil sakein).*`;
+                replyText = "Assalam-o-Alaikum! Main aap ka elite business executive hoon. *(Note: Live Gemini API key set nahi hai. Settings icon par click karke apni free Gemini API key enter karein).*";
             } else {
                 try {
-                    const lang = document.getElementById('language-select').value;
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userApiKey}`, {
+                    var lang = document.getElementById('language-select').value;
+                    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + userApiKey, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             contents: [{
-                                parts: [{ text: `You are an elite AI Business Executive and Senior Sales Strategist. Respond in ${lang} matching the user query: ${text}` }]
+                                parts: [{ text: 'You are an elite AI Business Executive and Senior Sales Strategist. Respond in ' + lang + ' matching the user query: ' + text }]
                             }]
                         })
                     });
-                    const data = await res.json();
-                    replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maazrat, API response process nahi ho saka. Dobara koshish karein.";
+                    var data = await res.json();
+                    replyText = data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text ? data.candidates[0].content.parts[0].text : "Maazrat, API response process nahi ho saka.";
                 } catch(err) {
                     replyText = "Connection error. Please check your API key.";
                 }
             }
 
             document.getElementById(loadingId).remove();
-            messagesDiv.innerHTML += `
-                <div class="flex gap-3 items-start">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs shadow-md"><i class="fa-solid fa-moon"></i></div>
-                    <div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">
-                        ${marked.parse(replyText)}
-                    </div>
-                </div>
-            `;
+            messagesDiv.innerHTML += '<div class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs shadow-md"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">' + (typeof marked !== 'undefined' ? marked.parse(replyText) : replyText) + '</div></div>';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        let lastGeneratedHTML = "";
+        var lastGeneratedHTML = "";
         function generateWebsite() {
-            const prompt = document.getElementById('web-prompt').value.trim() || "Modern landing page";
-            lastGeneratedHTML = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${prompt}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-900 text-white font-sans flex flex-col items-center justify-center p-6 min-h-screen">
-    <div class="max-w-3xl text-center">
-        <span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-xs font-semibold">Generated by Loona AI</span>
-        <h1 class="text-4xl font-extrabold mt-4 mb-4 bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">${prompt}</h1>
-        <p class="text-slate-400 mb-8">Professional high-end web interface created instantly for your business.</p>
-        <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg transition">Explore Services</button>
-    </div>
-</body>
-</html>`;
-            const frame = document.getElementById('web-preview-frame');
-            frame.srcdoc = lastGeneratedHTML;
+            var prompt = document.getElementById('web-prompt').value.trim() || "Modern landing page";
+            lastGeneratedHTML = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<title>' + prompt + '</title>\n<script src="https://cdn.tailwindcss.com"></script>\n</head>\n<body class="bg-slate-900 text-white font-sans flex flex-col items-center justify-center p-6 min-h-screen">\n<div class="max-w-3xl text-center">\n<span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-xs font-semibold">Generated by Loona AI</span>\n<h1 class="text-4xl font-extrabold mt-4 mb-4">' + prompt + '</h1>\n<p class="text-slate-400 mb-8">Professional high-end web interface created instantly.</p>\n</div>\n</body>\n</html>';
+            document.getElementById('web-preview-frame').srcdoc = lastGeneratedHTML;
         }
 
         function downloadWebsiteCode() {
             if(!lastGeneratedHTML) generateWebsite();
-            const blob = new Blob([lastGeneratedHTML], {type: 'text/html'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
+            var blob = new Blob([lastGeneratedHTML], {type: 'text/html'});
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
             a.href = url;
             a.download = 'index.html';
             a.click();
         }
 
         function generateImage() {
-            const prompt = document.getElementById('image-prompt-input').value.trim() || "luxury tech branding";
-            const encoded = encodeURIComponent(prompt);
-            const container = document.getElementById('image-result-container');
-            container.innerHTML = `<img src="https://image.pollinations.ai/prompt/${encoded}?width=800&height=500&nologo=true" class="rounded-xl shadow-2xl max-h-[400px] object-cover" alt="Generated AI Image">`;
+            var prompt = document.getElementById('image-prompt-input').value.trim() || "luxury tech branding";
+            var encoded = encodeURIComponent(prompt);
+            document.getElementById('image-result-container').innerHTML = '<img src="https://image.pollinations.ai/prompt/' + encoded + '?width=800&height=500&nologo=true" class="rounded-xl shadow-2xl max-h-[400px] object-cover" alt="Generated AI Image">';
         }
 
         function generateCodeSnippet() {
-            const prompt = document.getElementById('code-prompt').value.trim() || "python flask webhook";
-            document.getElementById('code-output-box').innerText = `# Python Flask Webhook code generated for: ${prompt}
-
-from flask import Flask, request, jsonify
-app = Flask(__name__)
-
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    data = request.json
-    print("Received:", data)
-    return jsonify({"status": "success"}), 200
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5005)`;
+            var prompt = document.getElementById('code-prompt').value.trim() || "python flask webhook";
+            document.getElementById('code-output-box').innerText = '# Python Flask Webhook code generated for: ' + prompt + '\n\nfrom flask import Flask, request, jsonify\napp = Flask(__name__)\n\n@app.route("/webhook", methods=["POST"])\ndef webhook():\n    return jsonify({"status": "success"}), 200\n\nif __name__ == "__main__":\n    app.run(host="0.0.0.0", port=5005)';
         }
 
         function clearAllData() {
@@ -461,18 +379,11 @@ if __name__ == '__main__':
         }
 
         function toggleVoiceInput() {
-            alert('Voice input active. Speak into your microphone (browser speech recognition).');
+            alert('Voice input active. Speak into your microphone.');
         }
 
         function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
     </script>
 </body>
