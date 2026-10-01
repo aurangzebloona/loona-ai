@@ -1,517 +1,526 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loona AI · Gemini Studio</title>
-    <!-- Tailwind CSS + custom off-white/blue theme -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        geminiBg: '#f8f7f4',
-                        geminiSidebar: '#f1f3f6',
-                        geminiHover: '#e4e8ed',
-                        geminiBorder: '#d0d8e0',
-                        geminiInput: '#ffffff',
-                        geminiText: '#1e1e1e',
-                        geminiMuted: '#5e6e7e',
-                        geminiCard: '#ffffff',
-                        geminiBlue: '#1a73e8',
-                        geminiBlueSoft: '#e2eafc',
-                        geminiBlueHover: '#d0e0f8',
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome & Marked.js -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap');
-        body { font-family: 'Google Sans', sans-serif; background-color: #f8f7f4; color: #1e1e1e; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a0b3c9; }
-        .markdown-body pre { background: #f1f5f9; padding: 14px; border-radius: 12px; margin: 10px 0; overflow-x: auto; border: 1px solid #d0d8e0; }
-        .markdown-body code { font-family: 'SF Mono', monospace; font-size: 13px; color: #1a73e8; background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
-        .markdown-body p { margin-bottom: 8px; line-height: 1.6; }
-        .sub-menu { display: none; position: absolute; left: 100%; top: 0; background: white; border: 1px solid #d0d8e0; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); width: 230px; padding: 8px; z-index: 90; }
-        .has-submenu:hover .sub-menu { display: flex; flex-direction: column; gap: 4px; }
-        .model-menu { display: none; position: absolute; bottom: 100%; right: 0; background: white; border: 1px solid #d0d8e0; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); width: 200px; padding: 6px; z-index: 80; margin-bottom: 8px; }
-        .model-menu.show { display: flex; flex-direction: column; gap: 1px; }
-        .plus-menu { display: none; position: absolute; bottom: 68px; left: 16px; background: white; border: 1px solid #d0d8e0; border-radius: 20px; box-shadow: 0 12px 28px rgba(0,0,0,0.12); width: 280px; padding: 8px; z-index: 80; flex-direction: column; gap: 2px; }
-        .plus-menu.show { display: flex; }
-        .btn-soft-blue { background-color: #e2eafc; color: #1a5bbf; }
-        .btn-soft-blue:hover { background-color: #d0e0f8; }
-        .gemini-pill { background: #ffffff; border: 1px solid #d0d8e0; }
-        .gemini-pill:hover { background: #eef2f6; }
-        /* ensure plus button icon is clickable */
-        #plusBtn { position: relative; z-index: 10; cursor: pointer; }
-        #plusBtn i { pointer-events: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loona AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; margin: 0; color: #1f1f1f; }
+  .hidden { display: none !important; }
+  .view { display: none; }
+  .view.show { display: flex; }
+  button { cursor: pointer; font-family: inherit; }
+
+  /* Sidebar */
+  #sidebar { width: 280px; background: #f0f4f9; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; height: 100vh; transition: margin-left .3s; }
+  #sidebar.collapsed { margin-left: -280px; }
+
+  /* Main */
+  main { flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100vh; }
+
+  /* Plus menu */
+  .plus-menu {
+    display: none; position: absolute; bottom: 70px; left: 16px;
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15), 0 2px 6px rgba(0,0,0,.06);
+    width: 300px; padding: 10px; z-index: 999;
+  }
+  .plus-menu.show { display: block; }
+
+  .item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 14px; border-radius: 12px; border: none;
+    background: transparent; font-size: 14px; color: #1f1f1f;
+    text-align: left; width: 100%; transition: background .12s;
+  }
+  .item:hover { background: #f1f3f4; }
+  .item i:first-child { font-size: 17px; width: 22px; text-align: center; }
+  .divider { border: none; border-top: 1px solid #e8eaed; margin: 6px 4px; }
+
+  /* Submenu */
+  .has-sub { position: relative; }
+  .sub-menu {
+    display: none; position: absolute; left: calc(100% + 6px); top: -8px;
+    background: #fff; border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    width: 260px; padding: 10px; z-index: 1000;
+  }
+  .has-sub:hover .sub-menu { display: block; }
+  .sub-menu .item { font-size: 13.5px; }
+
+  /* Icon colors */
+  .ic-blue { color: #1a73e8; }
+  .ic-green { color: #34a853; }
+  .ic-gray { color: #5f6368; }
+  .ic-red { color: #ea4335; }
+  .ic-yellow { color: #fbbc04; }
+  .ic-purple { color: #a142f4; }
+  .ic-cyan { color: #00acc1; }
+
+  /* Toggle switch */
+  .lab-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 12px; cursor: pointer; font-size: 13.5px; }
+  .lab-row:hover { background: #f1f3f4; }
+  .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #dadce0; border-radius: 20px; transition: .2s; }
+  .slider::before { content: ""; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .switch input:checked + .slider { background: #1a73e8; }
+  .switch input:checked + .slider::before { transform: translateX(14px); }
+
+  /* Chat bubbles */
+  .msg-user { align-self: flex-end; background: #e8f0fe; padding: 12px 18px; border-radius: 20px; max-width: 500px; font-size: 15px; }
+  .msg-bot { padding: 8px 0; font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+</style>
 </head>
-<body class="h-screen flex overflow-hidden">
+<body>
 
-    <!-- SIDEBAR (unchanged) -->
-    <aside id="sidebar" class="w-72 bg-geminiSidebar border-r border-geminiBorder flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
-        <div class="p-3 flex flex-col gap-2">
-            <div class="flex items-center justify-between px-2 py-1">
-                <div class="flex items-center gap-3">
-                    <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full hover:bg-geminiHover flex items-center justify-center text-gray-700 transition"><i class="fa-solid fa-bars text-base"></i></button>
-                    <div class="flex items-center gap-2.5">
-                        <!-- LOONA ICON — original gradient preserved -->
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" fill="url(#loona-star-grad)"/>
-                            <defs>
-                                <linearGradient id="loona-star-grad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                                    <stop offset="0%" stop-color="#FF512F"/>
-                                    <stop offset="50%" stop-color="#DD2476"/>
-                                    <stop offset="100%" stop-color="#8A2387"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <span class="font-semibold text-base tracking-wide text-gray-800">Loona</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex bg-[#e4e8ed] p-1 rounded-full border border-geminiBorder my-1 mx-1">
-                <button id="mode-chat" onclick="switchTab('chat')" class="flex-1 py-1.5 rounded-full text-xs font-medium bg-white text-gray-900 text-center transition shadow-sm">Chat</button>
-                <button id="mode-spark" onclick="switchTab('website')" class="flex-1 py-1.5 rounded-full text-xs font-medium text-gray-600 hover:text-gray-900 text-center transition">Website Studio</button>
-            </div>
-
-            <button onclick="startNewChat()" class="flex items-center gap-3 btn-soft-blue font-medium py-2.5 px-4 rounded-full transition shadow-sm text-sm w-fit pr-6 mx-1">
-                <i class="fa-solid fa-plus text-xs"></i> New chat
-            </button>
-
-            <div class="flex flex-col gap-0.5 mt-1 text-xs font-medium text-gray-700">
-                <button onclick="focusSearch()" class="flex items-center gap-3 px-4 py-2 rounded-full hover:bg-geminiHover transition text-left">
-                    <i class="fa-solid fa-magnifying-glass w-4 text-gray-500"></i> Search chats
-                </button>
-                <button onclick="switchTab('image')" class="flex items-center gap-3 px-4 py-2 rounded-full hover:bg-geminiHover transition text-left">
-                    <i class="fa-solid fa-image w-4 text-gray-500"></i> Images & Studio
-                </button>
-                <button onclick="switchTab('code')" class="flex items-center gap-3 px-4 py-2 rounded-full hover:bg-geminiHover transition text-left">
-                    <i class="fa-solid fa-code w-4 text-blue-600"></i> Code & Scripts
-                </button>
-            </div>
-        </div>
-
-        <div class="flex-1 overflow-y-auto px-4 py-2 border-t border-geminiBorder/60">
-            <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider px-2">Recent</span>
-            <div id="recentList" class="flex flex-col gap-0.5 mt-1"></div>
-        </div>
-
-        <div class="p-3 border-t border-geminiBorder bg-geminiSidebar">
-            <div class="flex items-center justify-between p-2 rounded-xl hover:bg-geminiHover transition">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
-                        <i class="fa-solid fa-user text-sm"></i>
-                    </div>
-                    <div class="text-left">
-                        <h4 id="user-display-name" class="text-xs font-semibold text-gray-900 leading-tight">Aurang Zeb</h4>
-                        <span class="text-[10px] text-gray-500 font-medium block">Creator & Developer</span>
-                    </div>
-                </div>
-                <button onclick="openSettingsModal()" class="w-8 h-8 rounded-full hover:bg-[#dadce0] flex items-center justify-center text-gray-600 transition" title="Settings"><i class="fa-solid fa-gear text-sm"></i></button>
-            </div>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 flex flex-col h-full bg-geminiBg relative overflow-hidden">
-        
-        <header class="h-14 flex items-center justify-between px-6 bg-geminiBg z-20">
-            <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="text-gray-600 hover:text-gray-900 md:hidden text-lg"><i class="fa-solid fa-bars"></i></button>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="startNewChat()" class="w-9 h-9 rounded-full hover:bg-geminiHover flex items-center justify-center text-gray-600 transition" title="New Chat"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
-            </div>
-        </header>
-
-        <!-- TAB 1: AI CHAT -->
-        <section class="view show flex-1 flex flex-col h-[calc(100%-3.5rem)] overflow-hidden relative justify-center items-center pb-24" id="view-chat">
-            <div id="chatBox" class="w-full max-w-3xl px-4 flex flex-col gap-6 overflow-y-auto max-h-[50vh]">
-                <div id="welcome-banner" class="text-center py-6 px-4">
-                    <h1 class="text-4xl md:text-5xl font-normal tracking-tight bg-gradient-to-r from-[#1a73e8] via-[#4285f4] to-[#9b72cb] bg-clip-text text-transparent mb-6">What's next, Aurang?</h1>
-                </div>
-            </div>
-
-            <div class="w-full max-w-3xl px-4 mt-6 relative">
-                
-                <!-- PLUS MENU: Upload files & Add from Drive visible and working -->
-                <div id="plusMenu" class="plus-menu text-xs text-gray-800">
-                    <button onclick="handleMenuAction('upload')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left">
-                        <i class="fa-solid fa-paperclip text-blue-600 w-4"></i> Upload files
-                    </button>
-                    <button onclick="handleMenuAction('drive')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left">
-                        <i class="fa-brands fa-google-drive text-emerald-600 w-4"></i> Add from Drive
-                    </button>
-                    
-                    <div class="relative has-submenu">
-                        <button class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left">
-                            <span class="flex items-center gap-3"><i class="fa-solid fa-cloud-arrow-up text-amber-600 w-4"></i> More uploads</span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-500"></i>
-                        </button>
-                        <div class="sub-menu">
-                            <button onclick="alert('Google Photos connected')" class="px-3 py-2 rounded-lg hover:bg-geminiHover text-left">Google Photos</button>
-                            <button onclick="alert('Avatar loaded')" class="px-3 py-2 rounded-lg hover:bg-geminiHover text-left">Avatar</button>
-                            <button onclick="alert('Import code tool')" class="px-3 py-2 rounded-lg hover:bg-geminiHover text-left">Import code</button>
-                            <button onclick="alert('Notebooks loaded')" class="px-3 py-2 rounded-lg hover:bg-geminiHover text-left">Notebooks</button>
-                        </div>
-                    </div>
-
-                    <hr class="border-geminiBorder my-1">
-                    <button onclick="switchTab('image')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left"><i class="fa-solid fa-wand-magic-sparkles text-purple-600 w-4"></i> Create image</button>
-                    <button onclick="alert('Video creation tool active!')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left"><i class="fa-solid fa-video text-rose-600 w-4"></i> Create video</button>
-                    <button onclick="alert('Music studio active!')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left"><i class="fa-solid fa-music text-cyan-600 w-4"></i> Create music</button>
-                    <button onclick="switchTab('website')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left"><i class="fa-solid fa-palette text-indigo-600 w-4"></i> Canva / Website</button>
-                    
-                    <div class="relative has-submenu">
-                        <button class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-geminiHover transition text-left">
-                            <span class="flex items-center gap-3"><i class="fa-solid fa-toolbox text-gray-600 w-4"></i> More tools</span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-500"></i>
-                        </button>
-                        <div class="sub-menu">
-                            <button onclick="alert('Guided Learning enabled')" class="px-3 py-2 rounded-lg hover:bg-geminiHover text-left">Guided Learning</button>
-                            <div class="px-3 py-2 rounded-lg hover:bg-geminiHover flex items-center justify-between cursor-pointer" onclick="toggleLab(event)">
-                                <span>Personal Intelligence</span>
-                                <input type="checkbox" id="labToggle" checked class="accent-blue-600 cursor-pointer">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="file" id="hiddenFileInput" class="hidden" multiple accept="image/*,.pdf,.txt,.docx,.csv">
-
-                <!-- Input bar -->
-                <div class="bg-geminiInput border border-geminiBorder rounded-3xl p-3.5 shadow-xl focus-within:border-gray-500 transition flex items-center gap-3">
-                    
-                    <!-- Plus button — now with explicit event binding and stopPropagation -->
-                    <button id="plusBtn" class="text-gray-600 hover:text-gray-900 w-9 h-9 rounded-full flex items-center justify-center transition hover:bg-geminiHover border border-geminiBorder flex-shrink-0 bg-white" title="Add files or tools" type="button">
-                        <i class="fa-solid fa-plus text-sm"></i>
-                    </button>
-                    
-                    <textarea id="chatInput" rows="1" placeholder="Ask Loona..." class="w-full bg-transparent text-base text-gray-900 px-2 py-1.5 focus:outline-none resize-none max-h-32 placeholder:text-gray-500"></textarea>
-                    
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                        <div class="relative">
-                            <button id="modelPillBtn" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full gemini-pill text-xs text-gray-700 transition" type="button">
-                                <i class="fa-solid fa-bolt text-amber-500"></i>
-                                <span id="currentModelName">Flash-Lite</span>
-                                <i class="fa-solid fa-chevron-down text-[10px] text-gray-500 ml-0.5"></i>
-                            </button>
-
-                            <div id="modelMenu" class="model-menu text-xs text-gray-800">
-                                <div class="px-3 py-1 font-semibold text-gray-400 uppercase text-[10px] tracking-wider">Select Model</div>
-                                <button onclick="selectModel('3.5 Flash-Lite')" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-geminiHover text-left"><span>3.5 Flash-Lite</span><i class="fa-solid fa-bolt text-amber-500"></i></button>
-                                <button onclick="selectModel('3.8 Flash')" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-geminiHover text-left"><span>3.8 Flash</span><i class="fa-solid fa-bolt text-blue-500"></i></button>
-                                <button onclick="selectModel('3.1 Pro')" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-geminiHover text-left"><span>3.1 Pro</span><i class="fa-solid fa-star text-purple-600"></i></button>
-                                <hr class="border-geminiBorder my-1">
-                                <button onclick="selectModel('Extended Thinking')" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-geminiHover text-left"><span>Extended Thinking</span><i class="fa-solid fa-brain text-indigo-600"></i></button>
-                            </div>
-                        </div>
-
-                        <button id="voiceBtn" class="text-gray-600 hover:text-gray-900 w-9 h-9 rounded-full flex items-center justify-center transition hover:bg-geminiHover" title="Use microphone" type="button"><i class="fa-solid fa-microphone text-sm"></i></button>
-                        <button id="sendBtn" class="bg-[#1a73e8] hover:bg-[#1557b0] text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-md" type="button"><i class="fa-solid fa-arrow-up text-sm"></i></button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 2: WEBSITE BUILDER -->
-        <section class="view hidden flex-1 flex flex-col h-[calc(100%-3.5rem)]" id="view-web">
-            <header class="border-b border-geminiBorder flex justify-between items-center px-6 py-3 bg-geminiBg">
-                <h2 class="text-sm font-semibold text-gray-900">Instant Website & Landing Page Generator</h2>
-                <div class="flex gap-2">
-                    <button class="bg-[#1a73e8] hover:bg-[#1557b0] text-white px-4 py-2 rounded-xl text-xs font-semibold transition" id="genWebBtn">Generate Code</button>
-                    <button class="bg-white hover:bg-geminiHover text-gray-800 px-4 py-2 rounded-xl text-xs font-semibold transition border border-geminiBorder" id="dlWebBtn">Download HTML</button>
-                </div>
-            </header>
-            <div class="p-6 flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
-                <textarea id="webPrompt" placeholder="Website ke baare mein tafseel likhein..." class="bg-white border border-geminiBorder text-gray-900 p-3 rounded-xl text-xs outline-none min-h-[90px] resize-vertical"></textarea>
-                <iframe id="webFrame" class="w-full flex-1 min-h-[360px] border border-geminiBorder rounded-xl bg-white" sandbox="allow-scripts"></iframe>
-            </div>
-        </section>
-
-        <!-- TAB 3: IMAGE STUDIO -->
-        <section class="view hidden flex-1 flex flex-col h-[calc(100%-3.5rem)] p-6 max-w-4xl mx-auto w-full overflow-y-auto" id="view-image">
-            <header class="border-b border-geminiBorder pb-3 mb-6"><h2 class="text-sm font-semibold text-gray-900">AI Image Generation Studio</h2></header>
-            <div class="flex gap-3 mb-6">
-                <input id="imgPrompt" placeholder="Image ka description likhein..." class="flex-1 bg-white border border-geminiBorder rounded-xl px-4 py-2.5 text-xs text-gray-900 outline-none focus:border-[#1a73e8]">
-                <button id="genImgBtn" class="bg-[#1a73e8] hover:bg-[#1557b0] text-white px-5 py-2.5 rounded-xl text-xs font-semibold transition">Generate</button>
-            </div>
-            <div id="imgBox" class="flex-1 bg-white border border-geminiBorder rounded-2xl min-h-[350px] flex items-center justify-center text-gray-500 text-xs">Yahan generated image aayegi</div>
-        </section>
-
-        <!-- TAB 4: CODE & SCRIPTS -->
-        <section class="view hidden flex-1 flex flex-col h-[calc(100%-3.5rem)] p-6 max-w-5xl mx-auto w-full overflow-y-auto" id="view-code">
-            <header class="border-b border-geminiBorder pb-3 mb-4 flex justify-between items-center">
-                <h2 class="text-sm font-semibold text-gray-900">Advanced Code & Script Studio</h2>
-                <button id="genCodeBtn" class="bg-[#1a73e8] hover:bg-[#1557b0] text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Generate Code</button>
-            </header>
-            <textarea id="codePrompt" placeholder="Kis cheez ka code chahiye?..." class="bg-white border border-geminiBorder text-gray-900 p-3 rounded-xl text-xs outline-none mb-4 min-h-[90px]"></textarea>
-            <pre id="codeOut" class="flex-1 bg-[#f1f5f9] border border-geminiBorder rounded-xl p-4 font-mono text-xs text-blue-700 overflow-auto">// Generated code snippet will appear here...</pre>
-        </section>
-
-    </main>
-
-    <!-- SETTINGS MODAL (unchanged) -->
-    <div id="settings-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white border border-geminiBorder rounded-2xl w-full max-w-md p-6 shadow-2xl flex flex-col gap-4 text-gray-900">
-            <div class="flex items-center justify-between border-b border-geminiBorder pb-3">
-                <h3 class="font-bold text-sm">API & Configuration Settings</h3>
-                <button onclick="closeSettingsModal()" class="text-gray-500 hover:text-gray-900"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="flex flex-col gap-3">
-                <div>
-                    <label class="text-xs font-semibold text-gray-700 mb-1 block">Google Gemini API Key (Optional)</label>
-                    <input id="api-key-input" type="password" placeholder="AIzaSy..." class="w-full bg-gray-50 border border-geminiBorder rounded-xl px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-[#1a73e8]">
-                    <span class="text-[10px] text-gray-500 mt-1 block">Your key is stored securely in your browser storage only.</span>
-                </div>
-            </div>
-            <div class="flex justify-end gap-2 pt-2 border-t border-geminiBorder">
-                <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs bg-gray-100 hover:bg-gray-200 text-gray-700">Cancel</button>
-                <button onclick="saveSettings()" class="px-4 py-2 rounded-xl text-xs bg-[#1a73e8] hover:bg-[#1557b0] text-white font-medium">Save Settings</button>
-            </div>
-        </div>
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div style="padding: 12px;">
+    <div style="display: flex; align-items: center; gap: 12px; padding: 8px 4px;">
+      <button id="sidebarToggle" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; font-size: 16px; color: #5f6368;">☰</button>
+      <svg width="24" height="24" viewBox="0 0 24 24">
+        <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" fill="url(#g)"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24">
+          <stop offset="0%" stop-color="#FF512F"/><stop offset="50%" stop-color="#DD2476"/><stop offset="100%" stop-color="#8A2387"/>
+        </linearGradient></defs>
+      </svg>
+      <span style="font-weight: 600; font-size: 16px;">Loona</span>
     </div>
 
-    <!-- JAVASCRIPT -->
-    <script>
-    (function () {
-        "use strict";
+    <div style="display: flex; background: #e9ecef; padding: 4px; border-radius: 999px; margin: 8px 4px;">
+      <button id="tabChat" style="flex: 1; padding: 6px; border-radius: 999px; border: none; background: #fff; font-size: 12px;">Chat</button>
+      <button id="tabWebsite" style="flex: 1; padding: 6px; border-radius: 999px; border: none; background: transparent; font-size: 12px;">Website</button>
+    </div>
 
-        var KEY = "loona_chat_gemini_v14";
-        var history = [];
-        var lastHTML = "";
-        var userApiKey = localStorage.getItem('loona_api_key') || '';
+    <button id="newChatBtn" style="display: flex; align-items: center; gap: 12px; background: #e8f0fe; color: #1967d2; border: none; padding: 10px 24px 10px 16px; border-radius: 999px; font-size: 14px; margin: 4px;">
+      <i class="fa-solid fa-plus"></i> New chat
+    </button>
 
-        function $(id) { return document.getElementById(id); }
+    <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 8px; font-size: 13px;">
+      <button class="nav-item" style="display: flex; gap: 12px; padding: 10px 16px; border-radius: 999px; border: none; background: transparent; text-align: left; font-size: 13px;">
+        <i class="fa-solid fa-magnifying-glass" style="color: #5f6368; width: 16px;"></i> Search chats
+      </button>
+      <button id="navImages" class="nav-item" style="display: flex; gap: 12px; padding: 10px 16px; border-radius: 999px; border: none; background: transparent; text-align: left; font-size: 13px;">
+        <i class="fa-solid fa-image" style="color: #5f6368; width: 16px;"></i> Images &amp; Studio
+      </button>
+      <button id="navCode" class="nav-item" style="display: flex; gap: 12px; padding: 10px 16px; border-radius: 999px; border: none; background: transparent; text-align: left; font-size: 13px;">
+        <i class="fa-solid fa-code" style="color: #1a73e8; width: 16px;"></i> Code &amp; Scripts
+      </button>
+    </div>
+  </div>
 
-        if(userApiKey) $("api-key-input").value = userApiKey;
+  <div style="padding: 12px; border-top: 1px solid #dadce0;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(90deg,#2563eb,#4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <div>
+          <div style="font-size: 13px; font-weight: 600;">Aurang Zeb</div>
+          <div style="font-size: 11px; color: #5f6368;">Creator</div>
+        </div>
+      </div>
+      <button id="openSettings" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #5f6368;">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+  </div>
+</aside>
 
-        function openSettingsModal() { $("settings-modal").classList.remove("hidden"); }
-        function closeSettingsModal() { $("settings-modal").classList.add("hidden"); }
-        window.openSettingsModal = openSettingsModal;
-        window.closeSettingsModal = closeSettingsModal;
+<!-- MAIN -->
+<main>
+  <header style="height: 56px; display: flex; align-items: center; justify-content: flex-end; padding: 0 24px;">
+    <button id="newChatTop" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #5f6368; font-size: 16px;">
+      <i class="fa-solid fa-pen-to-square"></i>
+    </button>
+  </header>
 
-        window.saveSettings = function() {
-            userApiKey = $("api-key-input").value.trim();
-            localStorage.setItem('loona_api_key', userApiKey);
-            closeSettingsModal();
-            alert("Settings saved successfully!");
-        };
+  <!-- CHAT VIEW -->
+  <section class="view show" id="viewChat" style="flex: 1; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 40px; overflow: hidden;">
+    <div id="chatBox" style="width: 100%; max-width: 768px; padding: 0 16px; overflow-y: auto; max-height: 55vh; display: flex; flex-direction: column; gap: 20px;">
+      <div id="welcome" style="text-align: center; padding: 24px 16px;">
+        <h1 style="font-size: 44px; font-weight: 400; margin: 0;">What's next, Aurang?</h1>
+      </div>
+    </div>
 
-        window.focusSearch = function() {
-            var q = prompt("Search chats:");
-            if(q) alert("Searching for: " + q);
-        };
+    <div style="width: 100%; max-width: 768px; padding: 0 16px; margin-top: 24px; position: relative;">
 
-        /* ========== PLUS MENU & MODEL MENU (fixed) ========== */
-        var plusMenu = $("plusMenu");
-        var modelMenu = $("modelMenu");
-        var plusBtn = $("plusBtn");
-        var modelPillBtn = $("modelPillBtn");
+      <!-- PLUS MENU -->
+      <div id="plusMenu" class="plus-menu">
 
-        // toggle plus menu
-        plusBtn.addEventListener("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            plusMenu.classList.toggle("show");
-            modelMenu.classList.remove("show");
-        });
+        <button id="btnUpload" class="item">
+          <i class="fa-solid fa-arrow-up-from-bracket ic-blue"></i>
+          <span>Upload files</span>
+        </button>
 
-        // toggle model menu
-        modelPillBtn.addEventListener("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            modelMenu.classList.toggle("show");
-            plusMenu.classList.remove("show");
-        });
+        <button id="btnDrive" class="item">
+          <i class="fa-brands fa-google-drive ic-green"></i>
+          <span>Add from Drive</span>
+        </button>
 
-        // close when clicking outside (use capture to avoid conflicts)
-        document.addEventListener("click", function(e) {
-            // if click is outside plus menu and not on plusBtn, close
-            if (!plusMenu.contains(e.target) && e.target !== plusBtn) {
-                plusMenu.classList.remove("show");
-            }
-            if (!modelMenu.contains(e.target) && e.target !== modelPillBtn && !modelPillBtn.contains(e.target)) {
-                modelMenu.classList.remove("show");
-            }
-        }, true);
+        <div class="has-sub">
+          <button class="item" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 14px;">
+              <i class="fa-solid fa-ellipsis ic-gray"></i>
+              <span>More uploads</span>
+            </span>
+            <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
+          </button>
+          <div class="sub-menu">
+            <button class="item alert-btn" data-msg="Google Photos connected">
+              <i class="fa-solid fa-images ic-blue"></i> Google Photos
+            </button>
+            <button class="item alert-btn" data-msg="Avatar loaded">
+              <i class="fa-solid fa-user-circle ic-purple"></i> Avatar
+            </button>
+            <button class="item alert-btn" data-msg="Import code tool active">
+              <i class="fa-solid fa-file-import ic-yellow"></i> Import code
+            </button>
+            <button class="item alert-btn" data-msg="Notebooks loaded">
+              <i class="fa-solid fa-book ic-gray"></i> Notebooks
+            </button>
+          </div>
+        </div>
 
-        // prevent closing when clicking inside menus
-        plusMenu.addEventListener("click", function(e) {
-            e.stopPropagation();
-        });
-        modelMenu.addEventListener("click", function(e) {
-            e.stopPropagation();
-        });
+        <hr class="divider">
 
-        window.selectModel = function(name) {
-            $("currentModelName").textContent = name;
-            modelMenu.classList.remove("show");
-        };
+        <button id="btnImage" class="item">
+          <i class="fa-solid fa-image ic-blue"></i>
+          <span>Create image</span>
+        </button>
 
-        window.toggleLab = function(e) {
-            e.stopPropagation();
-            var chk = $("labToggle");
-            chk.checked = !chk.checked;
-        };
+        <button class="item alert-btn" data-msg="Video creation tool active!">
+          <i class="fa-solid fa-clapperboard ic-red"></i>
+          <span>Create video</span>
+        </button>
 
-        window.handleMenuAction = function(action) {
-            if(action === 'upload') {
-                $("hiddenFileInput").click();
-                plusMenu.classList.remove("show");
-            } else if(action === 'drive') {
-                alert("Google Drive integration connected! (simulated)");
-                plusMenu.classList.remove("show");
-            }
-        };
+        <button class="item alert-btn" data-msg="Music studio active!">
+          <i class="fa-solid fa-music ic-cyan"></i>
+          <span>Create music</span>
+        </button>
 
-        $("hiddenFileInput").addEventListener("change", function(e) {
-            var files = e.target.files;
-            if(files && files.length > 0) {
-                var fileNames = Array.from(files).map(function(f) { return f.name; }).join(", ");
-                $("chatInput").value = "[Attached: " + fileNames + "] " + $("chatInput").value;
-            }
-        });
+        <button id="btnCanvas" class="item">
+          <i class="fa-solid fa-palette ic-purple"></i>
+          <span>Canvas</span>
+        </button>
 
-        /* ---------- Navigation ---------- */
-        window.switchTab = function(tabId) {
-            document.querySelectorAll('.view').forEach(function(v) { v.classList.add('hidden'); v.classList.remove('show'); });
-            var viewId = 'view-chat';
-            if(tabId === 'website') viewId = 'view-web';
-            else if(tabId === 'image') viewId = 'view-image';
-            else if(tabId === 'code') viewId = 'view-code';
-            $(viewId).classList.add('show');
-            $(viewId).classList.remove('hidden');
-        };
+        <div class="has-sub">
+          <button class="item" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 14px;">
+              <i class="fa-solid fa-ellipsis ic-gray"></i>
+              <span>More tools</span>
+            </span>
+            <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
+          </button>
+          <div class="sub-menu">
+            <button class="item alert-btn" data-msg="Guided Learning enabled">
+              <i class="fa-regular fa-comment-dots ic-gray"></i> Guided Learning
+            </button>
+            <div class="lab-row" id="labRow">
+              <span style="display: flex; align-items: center; gap: 12px;">
+                <i class="fa-solid fa-wand-magic-sparkles ic-blue"></i>
+                Personal Intelligence Labs
+              </span>
+              <label class="switch">
+                <input type="checkbox" id="labToggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
 
-        window.toggleSidebar = function() {
-            $("sidebar").classList.toggle('-translate-x-full');
-        };
+      </div>
 
-        /* ---------- AI Call Engine (unchanged) ---------- */
-        function askAI(messages) {
-            var systemPrompt = "You are Loona AI, an elite enterprise AI business executive and senior strategist.";
-            
-            if (userApiKey) {
-                return fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + userApiKey, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: messages.map(function(m) {
-                            return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
-                        })
-                    })
-                }).then(function(r) { return r.json(); }).then(function(d) {
-                    return d.candidates?.[0]?.content?.parts?.[0]?.text || "Maazrat, response process nahi ho saka.";
-                });
-            } else {
-                var apiMessages = [{ role: "system", content: systemPrompt }].concat(messages);
-                return fetch("https://text.pollinations.ai/openai", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model: "openai", messages: apiMessages })
-                }).then(function (r) {
-                    if (!r.ok) { throw new Error("Server error " + r.status); }
-                    return r.json();
-                }).then(function (d) {
-                    return d.choices[0].message.content;
-                });
-            }
-        }
+      <input type="file" id="fileInput" class="hidden" multiple>
 
-        /* ---------- Chat Rendering ---------- */
-        function addMsg(role, text, isErr) {
-            var banner = $("welcome-banner");
-            if (banner) banner.remove();
+      <!-- INPUT BAR -->
+      <div style="background: #f0f4f9; border-radius: 28px; padding: 14px 20px; display: flex; align-items: center; gap: 12px;">
+        <button id="plusBtn" style="width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent; color: #5f6368; font-size: 18px; flex-shrink: 0;">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <input id="chatInput" placeholder="Ask Loona" style="flex: 1; border: none; outline: none; font-size: 15px; background: transparent;">
+        <button id="modelPill" style="display: flex; align-items: center; gap: 4px; background: transparent; border: none; font-size: 13px; color: #5f6368;">
+          <span id="modelName">Flash-Lite</span> <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+        </button>
+        <button id="voiceBtn" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #5f6368; font-size: 16px;">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+        <button id="sendBtn" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: #1a73e8; color: #fff; font-size: 14px;">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+      </div>
+    </div>
+  </section>
 
-            var d = document.createElement("div");
-            d.className = "msg " + (role === "user" ? "user ml-auto bg-[#e2eafc] text-gray-900 rounded-3xl px-5 py-3.5 max-w-xl text-sm" : "bot mr-auto bg-transparent text-gray-900 py-2 w-full") + (isErr ? " text-red-600" : "");
-            
-            if (role === 'assistant' || role === 'bot') {
-                d.className += " markdown-body";
-                d.innerHTML = typeof marked !== 'undefined' ? marked.parse(text) : text;
-            } else {
-                d.textContent = text;
-            }
+  <!-- WEBSITE VIEW -->
+  <section class="view" id="viewWebsite" style="flex: 1; flex-direction: column; padding: 24px;">
+    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 16px;">Website Generator</h2>
+    <textarea id="webPrompt" placeholder="Website describe karein..." style="padding: 12px; border: 1px solid #dadce0; border-radius: 12px; min-height: 90px; margin-bottom: 12px;"></textarea>
+    <button id="genWebBtn" style="background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; border: none; align-self: flex-start;">Generate</button>
+    <iframe id="webFrame" style="flex: 1; border: 1px solid #dadce0; border-radius: 12px; margin-top: 16px; background: #fff;" sandbox="allow-scripts"></iframe>
+  </section>
 
-            $("chatBox").appendChild(d);
-            $("chatBox").scrollTop = $("chatBox").scrollHeight;
-            return d;
-        }
+  <!-- IMAGE VIEW -->
+  <section class="view" id="viewImage" style="flex: 1; flex-direction: column; padding: 24px; max-width: 900px; margin: 0 auto; width: 100%;">
+    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 16px;">Image Studio</h2>
+    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+      <input id="imgPrompt" placeholder="Image description..." style="flex: 1; padding: 10px 16px; border: 1px solid #dadce0; border-radius: 12px;">
+      <button id="genImgBtn" style="background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; border: none;">Generate</button>
+    </div>
+    <div id="imgBox" style="flex: 1; background: #fff; border: 1px solid #dadce0; border-radius: 16px; min-height: 350px; display: flex; align-items: center; justify-content: center; color: #5f6368;">Image will appear here</div>
+  </section>
 
-        function save() {
-            try { localStorage.setItem(KEY, JSON.stringify(history)); } catch (e) {}
-            renderRecent();
-        }
+  <!-- CODE VIEW -->
+  <section class="view" id="viewCode" style="flex: 1; flex-direction: column; padding: 24px; max-width: 1000px; margin: 0 auto; width: 100%;">
+    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 16px;">Code Studio</h2>
+    <textarea id="codePrompt" placeholder="Code description..." style="padding: 12px; border: 1px solid #dadce0; border-radius: 12px; min-height: 90px; margin-bottom: 12px;"></textarea>
+    <button id="genCodeBtn" style="background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; border: none; align-self: flex-start;">Generate</button>
+    <pre id="codeOut" style="flex: 1; background: #f1f3f4; border: 1px solid #dadce0; border-radius: 12px; padding: 16px; font-family: monospace; font-size: 12px; color: #1a73e8; overflow: auto; margin-top: 16px;">// Code will appear here...</pre>
+  </section>
+</main>
 
-        function renderRecent() {
-            var list = $("recentList");
-            list.textContent = "";
-            history.filter(function (m) { return m.role === "user"; }).slice(-8).reverse().forEach(function (m) {
-                var div = document.createElement("div");
-                div.textContent = m.content;
-                div.className = "p-2.5 rounded-full text-xs text-gray-600 cursor-pointer truncate hover:bg-geminiHover hover:text-gray-900 transition px-4";
-                list.appendChild(div);
-            });
-        }
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+  <div style="background: #fff; border-radius: 16px; width: 100%; max-width: 400px; padding: 24px;">
+    <h3 style="font-size: 14px; font-weight: 700; margin: 0 0 16px;">Settings</h3>
+    <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px;">Gemini API Key (optional)</label>
+    <input id="apiKey" type="password" placeholder="AIzaSy..." style="width: 100%; padding: 8px 12px; border: 1px solid #dadce0; border-radius: 12px; margin-bottom: 16px;">
+    <div style="display: flex; justify-content: flex-end; gap: 8px;">
+      <button id="closeSettings" style="padding: 8px 16px; border-radius: 12px; border: none; background: #f1f3f4;">Cancel</button>
+      <button id="saveSettings" style="padding: 8px 16px; border-radius: 12px; border: none; background: #1a73e8; color: #fff;">Save</button>
+    </div>
+  </div>
+</div>
 
-        function load() {
-            try { history = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { history = []; }
-            if (history.length > 0) {
-                var banner = $("welcome-banner");
-                if (banner) banner.remove();
-                $("chatBox").textContent = "";
-                history.forEach(function (m) { addMsg(m.role, m.content); });
-            }
-            renderRecent();
-        }
+<script>
+(function () {
+  "use strict";
 
-        function send() {
-            var text = $("chatInput").value.trim();
-            if (!text) { return; }
-            $("chatInput").value = "";
-            addMsg("user", text);
-            history.push({ role: "user", content: text });
-            
-            var wait = addMsg("bot", "Soch raha hoon...");
-            askAI(history.slice(-12)).then(function (reply) {
-                wait.remove();
-                addMsg("assistant", reply);
-                history.push({ role: "assistant", content: reply });
-                save();
-            }).catch(function (e) {
-                wait.remove();
-                addMsg("bot", "Network connection busy hai. Dobara try karein ya apni Gemini API key Settings mein set karein.", true);
-            });
-        }
+  function $(id) { return document.getElementById(id); }
 
-        $("sendBtn").addEventListener("click", send);
-        $("chatInput").addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+  var userApiKey = localStorage.getItem('loona_api_key') || '';
+  if (userApiKey) $("apiKey").value = userApiKey;
 
-        window.startNewChat = function() {
-            history = [];
-            try { localStorage.removeItem(KEY); } catch (e) {}
-            $("chatBox").innerHTML = `
-                <div id="welcome-banner" class="text-center py-6 px-4">
-                    <h1 class="text-4xl md:text-5xl font-normal tracking-tight bg-gradient-to-r from-[#1a73e8] via-[#4285f4] to-[#9b72cb] bg-clip-text text-transparent mb-6">What's next, Aurang?</h1>
-                </div>
-            `;
-            renderRecent();
-        };
+  /* ---------- PLUS MENU ---------- */
+  $("plusBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    $("plusMenu").classList.toggle("show");
+  });
 
-        /* ---------- Voice Input ---------- */
-        $("voiceBtn").addEventListener("click", function () {
-            var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SR) { alert("Is browser mein voice input support nahi hai. Chrome browser use karein."); return; }
-            var
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest("#plusMenu") && e.target !== $("plusBtn")) {
+      $("plusMenu").classList.remove("show");
+    }
+  });
+
+  /* ---------- UPLOAD FILES ---------- */
+  $("btnUpload").addEventListener("click", function (e) {
+    e.stopPropagation();
+    $("fileInput").click();
+  });
+
+  $("fileInput").addEventListener("change", function () {
+    var files = this.files;
+    if (files && files.length > 0) {
+      var names = [];
+      for (var i = 0; i < files.length; i++) names.push(files[i].name);
+      $("chatInput").value = "[Attached: " + names.join(", ") + "] " + $("chatInput").value;
+    }
+    $("plusMenu").classList.remove("show");
+  });
+
+  /* ---------- ADD FROM DRIVE ---------- */
+  $("btnDrive").addEventListener("click", function (e) {
+    e.stopPropagation();
+    alert("Google Drive integration connected!\n\n(Simulated — aap yahan apni Drive files browse kar sakte hain)");
+    $("plusMenu").classList.remove("show");
+  });
+
+  /* ---------- ALERT BUTTONS ---------- */
+  var alertBtns = document.querySelectorAll(".alert-btn");
+  for (var i = 0; i < alertBtns.length; i++) {
+    alertBtns[i].addEventListener("click", function (e) {
+      e.stopPropagation();
+      alert(this.getAttribute("data-msg"));
+    });
+  }
+
+  /* ---------- CREATE IMAGE ---------- */
+  $("btnImage").addEventListener("click", function (e) {
+    e.stopPropagation();
+    switchView("image");
+    $("plusMenu").classList.remove("show");
+  });
+
+  /* ---------- CANVAS ---------- */
+  $("btnCanvas").addEventListener("click", function (e) {
+    e.stopPropagation();
+    switchView("website");
+    $("plusMenu").classList.remove("show");
+  });
+
+  /* ---------- LAB TOGGLE ---------- */
+  $("labRow").addEventListener("click", function (e) {
+    e.stopPropagation();
+    var t = $("labToggle");
+    t.checked = !t.checked;
+  });
+  $("labToggle").addEventListener("click", function (e) {
+    e.stopPropagation();
+  });
+
+  /* ---------- SIDEBAR ---------- */
+  $("sidebarToggle").addEventListener("click", function () {
+    $("sidebar").classList.toggle("collapsed");
+  });
+
+  /* ---------- VIEW SWITCHER ---------- */
+  function switchView(name) {
+    var views = document.querySelectorAll(".view");
+    for (var i = 0; i < views.length; i++) views[i].classList.remove("show");
+    if (name === "chat") $("viewChat").classList.add("show");
+    if (name === "website") $("viewWebsite").classList.add("show");
+    if (name === "image") $("viewImage").classList.add("show");
+    if (name === "code") $("viewCode").classList.add("show");
+  }
+
+  $("tabChat").addEventListener("click", function () { switchView("chat"); });
+  $("tabWebsite").addEventListener("click", function () { switchView("website"); });
+  $("navImages").addEventListener("click", function () { switchView("image"); });
+  $("navCode").addEventListener("click", function () { switchView("code"); });
+
+  /* ---------- NEW CHAT ---------- */
+  function newChat() {
+    $("chatBox").innerHTML = '<div id="welcome" style="text-align: center; padding: 24px 16px;"><h1 style="font-size: 44px; font-weight: 400; margin: 0;">What\'s next, Aurang?</h1></div>';
+  }
+  $("newChatBtn").addEventListener("click", newChat);
+  $("newChatTop").addEventListener("click", newChat);
+
+  /* ---------- SETTINGS MODAL ---------- */
+  $("openSettings").addEventListener("click", function () { $("settingsModal").classList.remove("hidden"); });
+  $("closeSettings").addEventListener("click", function () { $("settingsModal").classList.add("hidden"); });
+  $("saveSettings").addEventListener("click", function () {
+    userApiKey = $("apiKey").value.trim();
+    localStorage.setItem('loona_api_key', userApiKey);
+    $("settingsModal").classList.add("hidden");
+    alert("Saved!");
+  });
+
+  /* ---------- SEND MESSAGE ---------- */
+  $("sendBtn").addEventListener("click", function () {
+    var text = $("chatInput").value.trim();
+    if (!text) return;
+    $("chatInput").value = "";
+
+    var welcome = $("welcome");
+    if (welcome) welcome.remove();
+
+    var userDiv = document.createElement("div");
+    userDiv.className = "msg-user";
+    userDiv.textContent = text;
+    $("chatBox").appendChild(userDiv);
+
+    var botDiv = document.createElement("div");
+    botDiv.className = "msg-bot";
+    botDiv.textContent = "Soch raha hoon...";
+    $("chatBox").appendChild(botDiv);
+
+    fetch("https://text.pollinations.ai/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai",
+        messages: [
+          { role: "system", content: "You are Loona AI, a helpful assistant." },
+          { role: "user", content: text }
+        ]
+      })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { botDiv.textContent = d.choices[0].message.content; })
+    .catch(function () { botDiv.textContent = "Network error. Dobara try karein."; });
+  });
+
+  $("chatInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      $("sendBtn").click();
+    }
+  });
+
+  /* ---------- VOICE ---------- */
+  $("voiceBtn").addEventListener("click", function () {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert("Voice input Chrome mein chalega."); return; }
+    var rec = new SR();
+    rec.lang = "ur-PK";
+    rec.onresult = function (e) { $("chatInput").value = e.results[0][0].transcript; };
+    rec.start();
+  });
+
+  /* ---------- MODEL PILL ---------- */
+  $("modelPill").addEventListener("click", function () {
+    var models = ["Flash-Lite", "3.5 Flash", "3.1 Pro", "Extended Thinking"];
+    var current = $("modelName").textContent;
+    var idx = models.indexOf(current);
+    var next = models[(idx + 1) % models.length];
+    $("modelName").textContent = next;
+  });
+
+  /* ---------- WEBSITE BUILDER ---------- */
+  $("genWebBtn").addEventListener("click", function () {
+    var p = $("webPrompt").value.trim();
+    if (!p) { alert("Prompt likhein."); return; }
+    $("genWebBtn").textContent = "Ban rahi...";
+    fetch("https://text.pollinations.ai/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai",
+        messages: [
+          { role: "system", content: "Output ONLY complete HTML file. No markdown, no explanation." },
+          { role: "user", content: "Build a website: " + p }
+        ]
+      })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var html = d.choices[0].message.content.replace(/^```[a-z]*\s*/i, "").replace(/```\s*$/, "").trim();
+      $("webFrame").srcdoc = html;
+      $("genWebBtn").textContent = "Generate";
+    })
+    .catch(function () { $("genWebBtn").textContent = "Generate"; alert("Error"); });
+  });
+
+  /* ---------- IMAGE STUDIO ---------- */
+  $("genImgBtn").addEventListener("click", function () {
+    var p = $("imgPrompt").value.trim() || "luxury tech branding";
+    $("imgBox").innerHTML = '<img src="https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?nologo=true&seed=' + Date.now() + '" style="max-width: 100%; max-height: 100%; border-radius: 12px;">';
+  });
+
+  /* ---------- CODE STUDIO ---------- */
+  $("genCodeBtn").addEventListener("click", function () {
+    var p = $("codePrompt").value.trim();
+    if (!p) { alert("Prompt likhein."); return; }
+    $("codeOut").textContent = "Ban raha...";
+    fetch("https://text.pollinations.ai/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai",
+        messages: [{ role: "user", content: "Generate code only, no explanation: " + p }]
+      })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { $("codeOut").textContent = d.choices[0].message.content; })
+    .catch(function () { $("codeOut").textContent = "Error"; });
+  });
+
+  console.log("✅ Loona AI ready — click the + button in input bar");
+})();
+</script>
+</body>
+</html>
