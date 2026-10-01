@@ -3,23 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loona AI</title>
+<title>Loona</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; color: #1f1f1f; height: 100vh; display: flex; overflow: hidden; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Google Sans', 'Segoe UI', Arial, sans-serif;
+    background: #ffffff;
+    color: #1f1f1f;
+    display: flex;
+    overflow: hidden;
+  }
   button { cursor: pointer; font-family: inherit; border: none; background: transparent; }
 
   /* ============ SIDEBAR ============ */
   #sidebar {
-    width: 260px; background: #f0f4f9;
-    display: flex; flex-direction: column; justify-content: space-between;
-    flex-shrink: 0; height: 100vh;
+    width: 260px;
+    background: #f0f4f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+    height: 100vh;
   }
   #sidebar .top { padding: 12px; }
-  .brand { display: flex; align-items: center; gap: 10px; padding: 8px 6px; }
-  .brand-icon { width: 24px; height: 24px; }
-  .brand-name { font-weight: 600; font-size: 16px; }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 6px; margin-bottom: 8px;
+  }
+  .brand-icon { width: 26px; height: 26px; }
+  .brand-name { font-weight: 500; font-size: 18px; color: #1f1f1f; }
+
+  .sidebar-pill {
+    display: flex; background: #e4e8ed;
+    padding: 3px; border-radius: 999px; margin: 8px 4px;
+  }
+  .sidebar-pill button {
+    flex: 1; padding: 6px; border-radius: 999px;
+    font-size: 13px; color: #5f6368; font-weight: 500;
+  }
+  .sidebar-pill button.active {
+    background: #ffffff; color: #1f1f1f;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
 
   .new-chat-btn {
     display: flex; align-items: center; gap: 10px;
@@ -33,18 +60,19 @@
     display: flex; align-items: center; gap: 12px;
     padding: 10px 16px; border-radius: 999px;
     font-size: 13px; color: #1f1f1f; width: 100%; text-align: left;
+    font-weight: 500;
   }
   .nav-btn:hover { background: #e4e8ed; }
-  .nav-btn i { width: 16px; color: #5f6368; }
+  .nav-btn i { width: 18px; color: #5f6368; font-size: 14px; text-align: center; }
 
   .user-profile {
-    padding: 12px; border-top: 1px solid #dadce0;
+    padding: 10px 12px; border-top: 1px solid #dadce0;
     display: flex; align-items: center; justify-content: space-between;
   }
   .user-info { display: flex; align-items: center; gap: 10px; }
   .avatar {
     width: 34px; height: 34px; border-radius: 50%;
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    background: linear-gradient(135deg, #4285f4, #1a73e8);
     color: #fff; display: flex; align-items: center; justify-content: center;
     font-size: 13px;
   }
@@ -52,77 +80,111 @@
   .user-role { font-size: 11px; color: #5f6368; }
 
   /* ============ MAIN ============ */
-  main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  main {
+    flex: 1; display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+    background: #ffffff;
+  }
 
   .top-bar {
-    height: 56px; display: flex; align-items: center; justify-content: flex-end;
-    padding: 0 24px; flex-shrink: 0;
+    height: 56px; display: flex; align-items: center;
+    justify-content: flex-end; padding: 0 24px; flex-shrink: 0;
   }
   .icon-btn {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 40px; height: 40px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     color: #5f6368; font-size: 15px;
   }
   .icon-btn:hover { background: #f1f3f4; }
 
-  /* Chat area */
-  .chat-area {
+  /* ============ CENTERED CHAT LAYOUT ============ */
+  .center-stage {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    padding: 0 16px; overflow: hidden; position: relative;
+    padding: 0 20px 120px;
+    overflow: hidden;
   }
-  .chat-scroll {
-    width: 100%; max-width: 760px; max-height: 55vh;
-    overflow-y: auto; display: flex; flex-direction: column;
-    gap: 20px; padding: 0 8px;
+  #chatScroll {
+    width: 100%; max-width: 800px;
+    max-height: 40vh; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 18px;
+    padding: 0 8px; margin-bottom: 30px;
   }
-  .welcome { text-align: center; padding: 20px; }
-  .welcome h1 { font-size: 42px; font-weight: 400; }
+  #chatScroll:empty { display: none; }
+
+  .welcome h1 {
+    font-size: 52px;
+    font-weight: 400;
+    color: #1f1f1f;
+    letter-spacing: -1px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
 
   .msg-user {
     align-self: flex-end; background: #e8f0fe;
     padding: 12px 18px; border-radius: 20px;
     max-width: 500px; font-size: 15px; word-wrap: break-word;
+    color: #1f1f1f;
   }
-  .msg-bot { padding: 6px 0; font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+  .msg-bot {
+    padding: 6px 0; font-size: 15px;
+    line-height: 1.6; white-space: pre-wrap; color: #1f1f1f;
+  }
 
-  /* Input bar */
+  /* ============ INPUT BAR (centered, Gemini style) ============ */
   .input-wrapper {
-    width: 100%; max-width: 760px; margin: 20px auto 30px;
-    padding: 0 8px; position: relative;
+    width: 100%; max-width: 800px; position: relative;
   }
   .input-bar {
-    background: #f0f4f9; border-radius: 28px;
-    padding: 12px 18px; display: flex; align-items: center; gap: 10px;
+    background: #f0f4f9;
+    border-radius: 999px;
+    padding: 12px 22px;
+    display: flex; align-items: center; gap: 12px;
+    min-height: 56px;
+    transition: box-shadow .2s, background .2s;
+  }
+  .input-bar:hover { background: #e9eef5; }
+  .input-bar:focus-within {
+    background: #ffffff;
+    box-shadow: 0 1px 6px rgba(32,33,36,.28);
   }
   .input-bar .plus {
     width: 28px; height: 28px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     color: #5f6368; font-size: 18px; flex-shrink: 0;
+    transition: background .15s;
   }
   .input-bar .plus:hover { background: #e4e8ed; }
   .input-bar input {
     flex: 1; border: none; outline: none; background: transparent;
     font-size: 15px; color: #1f1f1f; font-family: inherit;
+    padding: 4px 0;
   }
+  .input-bar input::placeholder { color: #5f6368; }
   .input-bar .model-btn {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 13px; color: #5f6368; padding: 4px 8px; border-radius: 999px;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 13px; color: #1f1f1f; padding: 6px 10px;
+    border-radius: 999px; font-weight: 500;
   }
   .input-bar .model-btn:hover { background: #e4e8ed; }
   .input-bar .mic, .input-bar .send {
     width: 34px; height: 34px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    color: #5f6368; font-size: 15px;
+    color: #5f6368; font-size: 15px; transition: background .15s;
   }
   .input-bar .mic:hover { background: #e4e8ed; }
-  .input-bar .send { background: #1a73e8; color: #fff; }
+  .input-bar .send {
+    background: #1a73e8; color: #ffffff;
+    width: 38px; height: 38px; font-size: 14px;
+  }
   .input-bar .send:hover { background: #1557b0; }
+  .input-bar .send.recording { background: #d93025; }
 
   /* ============ PLUS MENU ============ */
   .plus-menu {
     display: none; position: absolute;
-    bottom: 76px; left: 8px;
+    bottom: 76px; left: 0;
     background: #fff; border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,.15), 0 2px 6px rgba(0,0,0,.06);
     width: 300px; padding: 10px; z-index: 500;
@@ -132,11 +194,14 @@
   .menu-item {
     display: flex; align-items: center; gap: 14px;
     padding: 11px 14px; border-radius: 12px;
-    font-size: 14px; color: #1f1f1f; width: 100%; text-align: left;
-    transition: background .12s;
+    font-size: 14px; color: #1f1f1f; width: 100%;
+    text-align: left; transition: background .12s;
+    font-weight: 400;
   }
   .menu-item:hover { background: #f1f3f4; }
-  .menu-item .m-icon { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+  .menu-item .m-icon {
+    font-size: 17px; width: 22px; text-align: center; flex-shrink: 0;
+  }
   .menu-divider { border: none; border-top: 1px solid #e8eaed; margin: 6px 4px; }
 
   /* Submenu */
@@ -146,7 +211,7 @@
     left: calc(100% + 6px); top: -8px;
     background: #fff; border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,.15);
-    width: 250px; padding: 10px; z-index: 600;
+    width: 260px; padding: 10px; z-index: 600;
   }
   .has-sub:hover .sub-menu { display: block; }
   .sub-menu .menu-item { font-size: 13.5px; }
@@ -161,7 +226,11 @@
   .switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider { position: absolute; inset: 0; background: #dadce0; border-radius: 20px; transition: .2s; }
-  .slider::before { content: ""; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .slider::before {
+    content: ""; position: absolute;
+    height: 14px; width: 14px; left: 3px; bottom: 3px;
+    background: #fff; border-radius: 50%; transition: .2s;
+  }
   .switch input:checked + .slider { background: #1a73e8; }
   .switch input:checked + .slider::before { transform: translateX(14px); }
 
@@ -174,7 +243,7 @@
   .ic-purple { color: #a142f4; }
   .ic-cyan { color: #00acc1; }
 
-  /* Canvas (hidden overlay) */
+  /* ============ CANVAS OVERLAY ============ */
   #canvasOverlay {
     display: none; position: fixed; inset: 0;
     background: #fff; z-index: 900; flex-direction: column;
@@ -184,38 +253,63 @@
     display: flex; justify-content: space-between; align-items: center;
     padding: 14px 24px; border-bottom: 1px solid #dadce0;
   }
-  #canvasOverlay .canvas-body { flex: 1; display: flex; flex-direction: column; padding: 20px; gap: 12px; }
+  #canvasOverlay .canvas-body {
+    flex: 1; display: flex; flex-direction: column;
+    padding: 20px; gap: 12px;
+  }
   #canvasOverlay textarea {
     padding: 12px; border: 1px solid #dadce0; border-radius: 12px;
-    min-height: 80px; font-family: inherit; font-size: 14px; outline: none;
+    min-height: 80px; font-family: inherit; font-size: 14px;
+    outline: none; resize: vertical;
   }
   #canvasOverlay iframe {
     flex: 1; border: 1px solid #dadce0; border-radius: 12px; background: #fff;
   }
-  .primary-btn { background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 500; }
+  .primary-btn {
+    background: #1a73e8; color: #fff;
+    padding: 10px 20px; border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+  }
   .primary-btn:hover { background: #1557b0; }
-  .ghost-btn { background: #fff; border: 1px solid #dadce0; padding: 10px 20px; border-radius: 12px; font-size: 13px; }
+  .ghost-btn {
+    background: #fff; border: 1px solid #dadce0;
+    padding: 10px 20px; border-radius: 999px; font-size: 13px;
+  }
+  .ghost-btn:hover { background: #f1f3f4; }
 
-  /* Settings modal */
+  /* ============ SETTINGS MODAL ============ */
   #settingsModal {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,.4); z-index: 1000;
     align-items: center; justify-content: center;
   }
   #settingsModal.show { display: flex; }
-  .modal-box { background: #fff; border-radius: 16px; padding: 24px; width: 400px; max-width: 90%; }
-  .modal-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
-  .modal-box label { font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px; }
-  .modal-box input {
-    width: 100%; padding: 10px 12px; border: 1px solid #dadce0;
-    border-radius: 12px; font-size: 13px; outline: none; margin-bottom: 16px;
+  .modal-box {
+    background: #fff; border-radius: 20px;
+    padding: 26px; width: 420px; max-width: 92%;
   }
+  .modal-box h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .modal-box label {
+    font-size: 12px; font-weight: 600;
+    display: block; margin-bottom: 6px; color: #1f1f1f;
+  }
+  .modal-box input {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid #dadce0; border-radius: 12px;
+    font-size: 13px; outline: none; margin-bottom: 18px;
+    font-family: inherit;
+  }
+  .modal-box input:focus { border-color: #1a73e8; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
 
-  /* Sidebar toggle on mobile */
+  /* Mobile */
   @media (max-width: 768px) {
-    #sidebar { position: absolute; z-index: 100; transform: translateX(-100%); transition: transform .3s; }
+    #sidebar {
+      position: absolute; z-index: 100;
+      transform: translateX(-100%); transition: transform .3s;
+    }
     #sidebar.open { transform: translateX(0); }
+    .welcome h1 { font-size: 32px; }
   }
 </style>
 </head>
@@ -225,7 +319,7 @@
 <aside id="sidebar">
   <div class="top">
     <div class="brand">
-      <button id="sidebarToggle" style="width: 32px; height: 32px; border-radius: 50%; font-size: 15px; color: #5f6368;">
+      <button id="sidebarToggle" style="width: 36px; height: 36px; border-radius: 50%; font-size: 15px; color: #5f6368;">
         <i class="fa-solid fa-bars"></i>
       </button>
       <svg class="brand-icon" viewBox="0 0 24 24">
@@ -239,13 +333,20 @@
       <span class="brand-name">Loona</span>
     </div>
 
+    <div class="sidebar-pill">
+      <button class="active">Chat</button>
+      <button>Spark <span style="font-size: 9px; background: #e4e8ed; padding: 1px 5px; border-radius: 6px; margin-left: 4px;">BETA</span></button>
+    </div>
+
     <button id="newChatBtn" class="new-chat-btn">
       <i class="fa-solid fa-plus"></i> New chat
     </button>
 
     <button class="nav-btn"><i class="fa-solid fa-magnifying-glass"></i> Search chats</button>
-    <button class="nav-btn"><i class="fa-solid fa-image"></i> Images & Studio</button>
-    <button class="nav-btn"><i class="fa-solid fa-code"></i> Code & Scripts</button>
+    <button class="nav-btn"><i class="fa-solid fa-graduation-cap"></i> Students</button>
+    <button class="nav-btn"><i class="fa-solid fa-image"></i> Images</button>
+    <button class="nav-btn"><i class="fa-solid fa-video"></i> Videos</button>
+    <button class="nav-btn"><i class="fa-solid fa-book-open"></i> Library</button>
   </div>
 
   <div class="user-profile">
@@ -270,115 +371,125 @@
     </button>
   </div>
 
-  <div class="chat-area">
-    <div id="chatScroll" class="chat-scroll">
-      <div id="welcome" class="welcome">
-        <h1>What's next, Aurang?</h1>
-      </div>
+  <!-- CENTER STAGE (Welcome + Chat + Input) -->
+  <div class="center-stage">
+
+    <div id="chatScroll"></div>
+
+    <div id="welcome" class="welcome">
+      <h1>What's next, Aurang?</h1>
     </div>
-  </div>
 
-  <div class="input-wrapper">
+    <div class="input-wrapper">
 
-    <!-- PLUS MENU -->
-    <div id="plusMenu" class="plus-menu">
-      <button id="btnUpload" class="menu-item">
-        <i class="fa-solid fa-arrow-up-from-bracket m-icon ic-blue"></i>
-        <span>Upload files</span>
-      </button>
-
-      <button id="btnDrive" class="menu-item">
-        <i class="fa-brands fa-google-drive m-icon ic-green"></i>
-        <span>Add from Drive</span>
-      </button>
-
-      <div class="has-sub">
-        <button class="menu-item" style="justify-content: space-between;">
-          <span style="display: flex; align-items: center; gap: 14px;">
-            <i class="fa-solid fa-ellipsis m-icon ic-gray"></i>
-            <span>More uploads</span>
-          </span>
-          <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
+      <!-- PLUS MENU -->
+      <div id="plusMenu" class="plus-menu">
+        <button id="btnUpload" class="menu-item">
+          <i class="fa-solid fa-arrow-up-from-bracket m-icon ic-blue"></i>
+          <span>Upload files</span>
         </button>
-        <div class="sub-menu">
-          <button class="menu-item alert-btn" data-msg="Google Photos connected"><i class="fa-solid fa-images m-icon ic-blue"></i> Google Photos</button>
-          <button class="menu-item alert-btn" data-msg="Avatar loaded"><i class="fa-solid fa-user-circle m-icon ic-purple"></i> Avatar</button>
-          <button class="menu-item alert-btn" data-msg="Import code tool"><i class="fa-solid fa-file-import m-icon ic-yellow"></i> Import code</button>
-          <button class="menu-item alert-btn" data-msg="Notebooks loaded"><i class="fa-solid fa-book m-icon ic-gray"></i> Notebooks</button>
-        </div>
-      </div>
 
-      <hr class="menu-divider">
-
-      <button id="btnImage" class="menu-item">
-        <i class="fa-solid fa-image m-icon ic-blue"></i>
-        <span>Create image</span>
-      </button>
-
-      <button class="menu-item alert-btn" data-msg="Video creation tool active!">
-        <i class="fa-solid fa-clapperboard m-icon ic-red"></i>
-        <span>Create video</span>
-      </button>
-
-      <button class="menu-item alert-btn" data-msg="Music studio active!">
-        <i class="fa-solid fa-music m-icon ic-cyan"></i>
-        <span>Create music</span>
-      </button>
-
-      <button id="btnCanvas" class="menu-item">
-        <i class="fa-solid fa-palette m-icon ic-purple"></i>
-        <span>Canvas</span>
-      </button>
-
-      <div class="has-sub">
-        <button class="menu-item" style="justify-content: space-between;">
-          <span style="display: flex; align-items: center; gap: 14px;">
-            <i class="fa-solid fa-ellipsis m-icon ic-gray"></i>
-            <span>More tools</span>
-          </span>
-          <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
+        <button id="btnDrive" class="menu-item">
+          <i class="fa-brands fa-google-drive m-icon ic-green"></i>
+          <span>Add from Drive</span>
         </button>
-        <div class="sub-menu">
-          <button class="menu-item alert-btn" data-msg="Guided Learning enabled">
-            <i class="fa-regular fa-comment-dots m-icon ic-gray"></i> Guided Learning
-          </button>
-          <div class="lab-row" id="labRow">
-            <span style="display: flex; align-items: center; gap: 12px;">
-              <i class="fa-solid fa-wand-magic-sparkles m-icon ic-blue"></i>
-              Personal Intelligence Labs
+
+        <div class="has-sub">
+          <button class="menu-item" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 14px;">
+              <i class="fa-solid fa-ellipsis m-icon ic-gray"></i>
+              <span>More uploads</span>
             </span>
-            <label class="switch">
-              <input type="checkbox" id="labToggle" checked>
-              <span class="slider"></span>
-            </label>
+            <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
+          </button>
+          <div class="sub-menu">
+            <button class="menu-item alert-btn" data-msg="Google Photos connected">
+              <i class="fa-solid fa-images m-icon ic-blue"></i> Google Photos
+            </button>
+            <button class="menu-item alert-btn" data-msg="Avatar loaded">
+              <i class="fa-solid fa-user-circle m-icon ic-purple"></i> Avatar
+            </button>
+            <button class="menu-item alert-btn" data-msg="Import code tool">
+              <i class="fa-solid fa-file-import m-icon ic-yellow"></i> Import code
+            </button>
+            <button class="menu-item alert-btn" data-msg="Notebooks loaded">
+              <i class="fa-solid fa-book m-icon ic-gray"></i> Notebooks
+            </button>
+          </div>
+        </div>
+
+        <hr class="menu-divider">
+
+        <button id="btnImage" class="menu-item">
+          <i class="fa-solid fa-image m-icon ic-blue"></i>
+          <span>Create image</span>
+        </button>
+
+        <button class="menu-item alert-btn" data-msg="Video creation tool active!">
+          <i class="fa-solid fa-clapperboard m-icon ic-red"></i>
+          <span>Create video</span>
+        </button>
+
+        <button class="menu-item alert-btn" data-msg="Music studio active!">
+          <i class="fa-solid fa-music m-icon ic-cyan"></i>
+          <span>Create music</span>
+        </button>
+
+        <button id="btnCanvas" class="menu-item">
+          <i class="fa-solid fa-palette m-icon ic-purple"></i>
+          <span>Canvas</span>
+        </button>
+
+        <div class="has-sub">
+          <button class="menu-item" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 14px;">
+              <i class="fa-solid fa-ellipsis m-icon ic-gray"></i>
+              <span>More tools</span>
+            </span>
+            <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
+          </button>
+          <div class="sub-menu">
+            <button class="menu-item alert-btn" data-msg="Guided Learning enabled">
+              <i class="fa-regular fa-comment-dots m-icon ic-gray"></i> Guided Learning
+            </button>
+            <div class="lab-row" id="labRow">
+              <span style="display: flex; align-items: center; gap: 12px;">
+                <i class="fa-solid fa-wand-magic-sparkles m-icon ic-blue"></i>
+                Personal Intelligence Labs
+              </span>
+              <label class="switch">
+                <input type="checkbox" id="labToggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <input type="file" id="fileInput" style="display: none;" multiple>
+      <input type="file" id="fileInput" style="display: none;" multiple>
 
-    <!-- INPUT BAR -->
-    <div class="input-bar">
-      <button id="plusBtn" class="plus">
-        <i class="fa-solid fa-plus"></i>
-      </button>
-      <input id="chatInput" placeholder="Ask Loona" autocomplete="off">
-      <button id="modelBtn" class="model-btn">
-        <span id="modelName">Flash-Lite</span>
-        <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
-      </button>
-      <button id="voiceBtn" class="mic">
-        <i class="fa-solid fa-microphone"></i>
-      </button>
-      <button id="sendBtn" class="send">
-        <i class="fa-solid fa-arrow-up"></i>
-      </button>
+      <!-- INPUT BAR -->
+      <div class="input-bar">
+        <button id="plusBtn" class="plus" title="Add files or tools">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <input id="chatInput" placeholder="Ask Loona" autocomplete="off">
+        <button id="modelBtn" class="model-btn">
+          <span id="modelName">Flash-Lite</span>
+          <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+        </button>
+        <button id="voiceBtn" class="mic" title="Use microphone">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+        <button id="sendBtn" class="send" title="Send">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+      </div>
     </div>
   </div>
 </main>
 
-<!-- CANVAS OVERLAY (Website/Code generator) -->
+<!-- CANVAS OVERLAY -->
 <div id="canvasOverlay">
   <div class="canvas-top">
     <h3 style="font-size: 15px; font-weight: 600;">Canvas</h3>
@@ -417,19 +528,18 @@
   var userApiKey = localStorage.getItem('loona_api_key') || '';
   if (userApiKey) $("apiKey").value = userApiKey;
 
-  /* ---------- PLUS MENU ---------- */
+  /* ============ PLUS MENU ============ */
   $("plusBtn").addEventListener("click", function (e) {
     e.stopPropagation();
     $("plusMenu").classList.toggle("show");
   });
-
   document.addEventListener("click", function (e) {
     if (!e.target.closest("#plusMenu") && e.target !== $("plusBtn")) {
       $("plusMenu").classList.remove("show");
     }
   });
 
-  /* ---------- UPLOAD FILES ---------- */
+  /* ============ UPLOAD FILES ============ */
   $("btnUpload").addEventListener("click", function (e) {
     e.stopPropagation();
     $("fileInput").click();
@@ -443,14 +553,14 @@
     $("plusMenu").classList.remove("show");
   });
 
-  /* ---------- ADD FROM DRIVE ---------- */
+  /* ============ ADD FROM DRIVE ============ */
   $("btnDrive").addEventListener("click", function (e) {
     e.stopPropagation();
-    alert("Google Drive integration connected!\n\n(Simulated — aap yahan apni Drive files browse kar sakte hain)");
+    alert("Google Drive integration connected!\n\n(Aap yahan apni Drive files browse kar sakte hain)");
     $("plusMenu").classList.remove("show");
   });
 
-  /* ---------- ALERT BUTTONS ---------- */
+  /* ============ ALERT BUTTONS ============ */
   document.querySelectorAll(".alert-btn").forEach(function (btn) {
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
@@ -458,14 +568,13 @@
     });
   });
 
-  /* ---------- CREATE IMAGE ---------- */
+  /* ============ CREATE IMAGE ============ */
   $("btnImage").addEventListener("click", function (e) {
     e.stopPropagation();
     $("plusMenu").classList.remove("show");
     var p = prompt("Image description likhein:");
     if (!p) return;
-    var welcome = $("welcome");
-    if (welcome) welcome.remove();
+    removeWelcome();
     var botDiv = document.createElement("div");
     botDiv.className = "msg-bot";
     botDiv.innerHTML = 'Generating image...<br><img src="https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?nologo=true&seed=' + Date.now() + '" style="max-width: 400px; border-radius: 12px; margin-top: 10px;">';
@@ -473,7 +582,7 @@
     $("chatScroll").scrollTop = $("chatScroll").scrollHeight;
   });
 
-  /* ---------- CANVAS ---------- */
+  /* ============ CANVAS ============ */
   $("btnCanvas").addEventListener("click", function (e) {
     e.stopPropagation();
     $("plusMenu").classList.remove("show");
@@ -514,7 +623,7 @@
     a.href = url; a.download = 'index.html'; a.click();
   });
 
-  /* ---------- LAB TOGGLE ---------- */
+  /* ============ LAB TOGGLE ============ */
   $("labRow").addEventListener("click", function (e) {
     e.stopPropagation();
     var t = $("labToggle");
@@ -522,19 +631,34 @@
   });
   $("labToggle").addEventListener("click", function (e) { e.stopPropagation(); });
 
-  /* ---------- SIDEBAR ---------- */
+  /* ============ SIDEBAR ============ */
   $("sidebarToggle").addEventListener("click", function () {
     $("sidebar").classList.toggle("open");
   });
 
-  /* ---------- NEW CHAT ---------- */
+  /* ============ NEW CHAT ============ */
+  function removeWelcome() {
+    var w = $("welcome");
+    if (w) w.remove();
+  }
+  function showWelcome() {
+    if (!$("welcome")) {
+      var w = document.createElement("div");
+      w.id = "welcome";
+      w.className = "welcome";
+      w.innerHTML = '<h1>What\'s next, Aurang?</h1>';
+      var wrapper = document.querySelector(".input-wrapper");
+      wrapper.parentNode.insertBefore(w, wrapper);
+    }
+  }
   function newChat() {
-    $("chatScroll").innerHTML = '<div id="welcome" class="welcome"><h1>What\'s next, Aurang?</h1></div>';
+    $("chatScroll").innerHTML = "";
+    showWelcome();
   }
   $("newChatBtn").addEventListener("click", newChat);
   $("newChatTop").addEventListener("click", newChat);
 
-  /* ---------- SETTINGS ---------- */
+  /* ============ SETTINGS ============ */
   $("openSettings").addEventListener("click", function () { $("settingsModal").classList.add("show"); });
   $("closeSettings").addEventListener("click", function () { $("settingsModal").classList.remove("show"); });
   $("saveSettings").addEventListener("click", function () {
@@ -544,14 +668,12 @@
     alert("Saved!");
   });
 
-  /* ---------- SEND MESSAGE ---------- */
+  /* ============ SEND MESSAGE ============ */
   $("sendBtn").addEventListener("click", function () {
     var text = $("chatInput").value.trim();
     if (!text) return;
     $("chatInput").value = "";
-
-    var welcome = $("welcome");
-    if (welcome) welcome.remove();
+    removeWelcome();
 
     var userDiv = document.createElement("div");
     userDiv.className = "msg-user";
@@ -587,7 +709,7 @@
     if (e.key === "Enter") { e.preventDefault(); $("sendBtn").click(); }
   });
 
-  /* ---------- VOICE ---------- */
+  /* ============ VOICE ============ */
   $("voiceBtn").addEventListener("click", function () {
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { alert("Voice input Chrome mein chalega."); return; }
@@ -597,15 +719,14 @@
     rec.start();
   });
 
-  /* ---------- MODEL PILL ---------- */
+  /* ============ MODEL PILL ============ */
   $("modelBtn").addEventListener("click", function () {
     var models = ["Flash-Lite", "3.5 Flash", "3.1 Pro", "Extended Thinking"];
-    var current = $("modelName").textContent;
-    var idx = models.indexOf(current);
+    var idx = models.indexOf($("modelName").textContent);
     $("modelName").textContent = models[(idx + 1) % models.length];
   });
 
-  console.log("✅ Loona AI ready — click the + button.");
+  console.log("✅ Loona ready — Gemini-style layout");
 })();
 </script>
 </body>
