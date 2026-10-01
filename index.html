@@ -41,11 +41,11 @@
     <aside id="sidebar" class="w-64 bg-sidebarbg border-r border-zinc-800 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
         <!-- Top Section -->
         <div class="p-4 flex flex-col gap-4">
-            <!-- Brand Logo -->
+            <!-- Brand Logo (Professional Claude/ChatGPT Minimalist Geometric Style) -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white">
-                        <i class="fa-solid fa-moon text-lg"></i>
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center shadow-md text-indigo-400 font-bold text-base tracking-tighter">
+                        LZ
                     </div>
                     <div>
                         <h1 class="font-bold text-base tracking-wide text-white">Loona AI</h1>
@@ -136,8 +136,8 @@
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6 max-w-4xl mx-auto w-full">
                 <!-- Welcome Banner -->
                 <div id="welcome-banner" class="my-auto text-center py-12 px-4">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white mb-4">
-                        <i class="fa-solid fa-moon text-3xl"></i>
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 mx-auto flex items-center justify-center shadow-xl text-indigo-400 font-bold text-2xl tracking-tighter mb-4">
+                        LZ
                     </div>
                     <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, Aurang Zeb!</h2>
                     <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>
@@ -314,8 +314,8 @@
         function startNewChat() {
             document.getElementById('chat-messages').innerHTML = `
                 <div id="welcome-banner" class="my-auto text-center py-12 px-4">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white mb-4">
-                        <i class="fa-solid fa-moon text-3xl"></i>
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 mx-auto flex items-center justify-center shadow-xl text-indigo-400 font-bold text-2xl tracking-tighter mb-4">
+                        LZ
                     </div>
                     <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, ${userName}!</h2>
                     <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>
@@ -353,7 +353,7 @@
             const loadingId = 'loading-' + Date.now();
             messagesDiv.innerHTML += `
                 <div id="${loadingId}" class="flex gap-3 items-start">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-moon"></i></div>
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs"><i class="fa-solid fa-moon"></i></div>
                     <div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs">
                         <i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...
                     </div>
@@ -386,7 +386,7 @@
             document.getElementById(loadingId).remove();
             messagesDiv.innerHTML += `
                 <div class="flex gap-3 items-start">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shadow-md"><i class="fa-solid fa-moon"></i></div>
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-zinc-700 flex items-center justify-center text-indigo-400 font-bold text-xs shadow-md"><i class="fa-solid fa-moon"></i></div>
                     <div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">
                         ${marked.parse(replyText)}
                     </div>
@@ -403,13 +403,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${escapeHtml(prompt)}</title>
+    <title>${prompt}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white font-sans min-p-10 flex flex-col items-center justify-center p-6">
+<body class="bg-slate-900 text-white font-sans flex flex-col items-center justify-center p-6 min-h-screen">
     <div class="max-w-3xl text-center">
         <span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-xs font-semibold">Generated by Loona AI</span>
-        <h1 class="text-4xl font-extrabold mt-4 mb-4 bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">${escapeHtml(prompt)}</h1>
+        <h1 class="text-4xl font-extrabold mt-4 mb-4 bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">${prompt}</h1>
         <p class="text-slate-400 mb-8">Professional high-end web interface created instantly for your business.</p>
         <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg transition">Explore Services</button>
     </div>
@@ -450,7 +450,7 @@ def webhook():
     return jsonify({"status": "success"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.5000', port=5005)`;
+    app.run(host='0.0.0.0', port=5005)`;
         }
 
         function clearAllData() {
@@ -465,7 +465,14 @@ if __name__ == '__main__':
         }
 
         function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(>"/g, "&gt;");
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
     </script>
 </body>
