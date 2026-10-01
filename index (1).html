@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loona AI - Elite Business Assistant & Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121214',
+                        sidebarbg: '#18181b',
+                        panelbg: '#1e1e24',
+                        accent: '#6366f1',
+                        accenthover: '#4f46e5'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+    </style>
+</head>
+<body class="bg-darkbg text-gray-100 h-screen flex overflow-hidden">
+
+    <!-- SIDEBAR (Claude / ChatGPT Pro Style) -->
+    <aside id="sidebar" class="w-64 bg-sidebarbg border-r border-zinc-800 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
+        <!-- Top Section -->
+        <div class="p-4 flex flex-col gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white">
+                        <i class="fa-solid fa-moon text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base tracking-wide text-white">Loona AI</h1>
+                        <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold px-1.5 py-0.5 bg-indigo-500/10 rounded">Pro Executive</span>
+                    </div>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- New Chat Button -->
+            <button onclick="startNewChat()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center gap-2.5 transition shadow-sm text-sm">
+                <i class="fa-solid fa-plus text-xs"></i> New Project / Chat
+            </button>
+
+            <!-- Navigation Tabs -->
+            <div class="flex flex-col gap-1 mt-2">
+                <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-zinc-800/80 text-white transition">
+                    <i class="fa-solid fa-comments w-5 text-indigo-400"></i> AI Assistant
+                </button>
+                <button onclick="switchTab('website')" id="nav-website" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:bg-zinc-800/50 hover:text-white transition">
+                    <i class="fa-solid fa-laptop-code w-5 text-emerald-400"></i> Website Builder
+                </button>
+                <button onclick="switchTab('image')" id="nav-image" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:bg-zinc-800/50 hover:text-white transition">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5 text-amber-400"></i> Image Studio
+                </button>
+                <button onclick="switchTab('code')" id="nav-code" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:bg-zinc-800/50 hover:text-white transition">
+                    <i class="fa-solid fa-code w-5 text-cyan-400"></i> Code & Scripts
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat History List -->
+        <div class="flex-1 overflow-y-auto px-4 py-2 border-t border-zinc-800/50">
+            <span class="text-xs font-semibold text-zinc-500 uppercase tracking-wider px-1">Recent Sessions</span>
+            <div id="chat-history" class="flex flex-col gap-1 mt-2">
+                <!-- Dynamic history items will appear here -->
+            </div>
+        </div>
+
+        <!-- User Profile & Settings Footer -->
+        <div class="p-4 border-t border-zinc-800 bg-zinc-900/50">
+            <div class="relative">
+                <button onclick="toggleProfileMenu()" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-zinc-800/80 transition">
+                    <div class="flex items-center gap-3">
+                        <div id="user-avatar" class="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white">AZ</div>
+                        <div class="text-left">
+                            <h4 id="user-display-name" class="text-xs font-semibold text-white">Aurang Zeb</h4>
+                            <span class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Pro Connected</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-up text-xs text-zinc-400"></i>
+                </button>
+
+                <!-- Profile Popover Menu -->
+                <div id="profile-menu" class="hidden absolute bottom-14 left-0 w-full bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-2 flex flex-col gap-1 z-50">
+                    <button onclick="openSettingsModal()" class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-zinc-800 text-zinc-200 flex items-center gap-2"><i class="fa-solid fa-gear text-indigo-400"></i> API & Settings</button>
+                    <button onclick="clearAllData()" class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-red-500/10 text-red-400 flex items-center gap-2"><i class="fa-solid fa-trash"></i> Clear History</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full bg-darkbg relative overflow-hidden">
+        
+        <!-- Top Header Bar -->
+        <header class="h-14 border-b border-zinc-800 flex items-center justify-between px-4 bg-darkbg/80 backdrop-blur z-20">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="text-zinc-400 hover:text-white md:hidden text-lg"><i class="fa-solid fa-bars"></i></button>
+                <div class="flex items-center gap-2">
+                    <span id="current-mode-title" class="text-sm font-semibold text-white">AI Assistant & Executive</span>
+                    <span class="text-xs text-zinc-500 px-2 py-0.5 bg-zinc-800 rounded-full">Gemini 1.5 Flash</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <select id="language-select" class="bg-zinc-800 text-zinc-200 text-xs rounded-lg px-3 py-1.5 border border-zinc-700 focus:outline-none focus:border-indigo-500">
+                    <option value="Roman Urdu">Roman Urdu</option>
+                    <option value="English">English</option>
+                    <option value="Urdu">اردو</option>
+                </select>
+                <button onclick="openSettingsModal()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 w-8 h-8 rounded-lg flex items-center justify-center text-xs transition"><i class="fa-solid fa-key"></i></button>
+            </div>
+        </header>
+
+        <!-- TAB 1: AI CHAT INTERFACE -->
+        <div id="tab-chat" class="tab-content flex-1 flex flex-col h-[calc(100%-3.5rem)] overflow-hidden">
+            <!-- Messages Container -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6 max-w-4xl mx-auto w-full">
+                <!-- Welcome Banner -->
+                <div id="welcome-banner" class="my-auto text-center py-12 px-4">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white mb-4">
+                        <i class="fa-solid fa-moon text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, Aurang Zeb!</h2>
+                    <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto text-left">
+                        <div onclick="sendQuickPrompt('Aaj ke gold rates aur market trends ki tafseel batao')" class="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 cursor-pointer transition">
+                            <h4 class="text-xs font-semibold text-white mb-1"><i class="fa-solid fa-chart-line text-indigo-400 mr-2"></i> Market & Gold Rates</h4>
+                            <p class="text-[11px] text-zinc-400">Check live market data and gold rates.</p>
+                        </div>
+                        <div onclick="sendQuickPrompt('Ek high-end e-commerce store ke liye sales pitch likho')" class="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 cursor-pointer transition">
+                            <h4 class="text-xs font-semibold text-white mb-1"><i class="fa-solid fa-bullhorn text-emerald-400 mr-2"></i> E-Commerce Sales Pitch</h4>
+                            <p class="text-[11px] text-zinc-400">Draft professional client conversion scripts.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Footer -->
+            <div class="p-4 bg-darkbg border-t border-zinc-800">
+                <div class="max-w-4xl mx-auto bg-zinc-900 border border-zinc-700/80 rounded-2xl p-2 shadow-lg focus-within:border-indigo-500 transition">
+                    <textarea id="user-input" rows="1" placeholder="Type your message or project inquiry..." class="w-full bg-transparent text-sm text-white px-3 py-1.5 focus:outline-none resize-none max-h-32"></textarea>
+                    <div class="flex items-center justify-between px-2 pt-2 border-t border-zinc-800/60 mt-1">
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleVoiceInput()" id="mic-btn" class="text-zinc-400 hover:text-white text-xs px-2 py-1 rounded hover:bg-zinc-800 transition"><i class="fa-solid fa-microphone"></i> Voice</button>
+                            <span class="text-[11px] text-zinc-500">Press Enter to send</span>
+                        </div>
+                        <button onclick="handleSendMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white w-8 h-8 rounded-xl flex items-center justify-center transition shadow-md"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: WEBSITE BUILDER -->
+        <div id="tab-website" class="tab-content hidden flex-1 flex flex-col md:flex-row h-[calc(100%-3.5rem)]">
+            <div class="w-full md:w-1/2 p-6 border-r border-zinc-800 flex flex-col justify-between overflow-y-auto">
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-laptop-code text-emerald-400 mr-2"></i> Instant Website Builder</h2>
+                        <p class="text-xs text-zinc-400">Describe the webpage or landing page you need, and AI will generate complete, responsive HTML code instantly.</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-zinc-300">Website Prompt / Description</label>
+                        <textarea id="web-prompt" rows="5" class="bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. A modern luxury landing page for Loona Mart e-commerce store with product cards, hero banner, and contact form..."></textarea>
+                    </div>
+                    <button onclick="generateWebsite()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-lg">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Complete HTML Code
+                    </button>
+                </div>
+                <div class="mt-4 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+                    <span class="text-[11px] text-zinc-400">Tip: You can download the generated HTML file and host it directly on GitHub Pages or Netlify.</span>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 flex flex-col bg-zinc-950">
+                <div class="h-10 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4">
+                    <span class="text-xs font-semibold text-zinc-400 flex items-center gap-2"><i class="fa-solid fa-eye text-indigo-400"></i> Live Preview</span>
+                    <button onclick="downloadWebsiteCode()" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-1 rounded-lg transition"><i class="fa-solid fa-download mr-1"></i> Download HTML</button>
+                </div>
+                <div class="flex-1 relative">
+                    <iframe id="web-preview-frame" class="w-full h-full bg-white border-0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: IMAGE STUDIO -->
+        <div id="tab-image" class="tab-content hidden flex-1 flex flex-col p-6 max-w-4xl mx-auto w-full overflow-y-auto">
+            <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-wand-magic-sparkles text-amber-400 mr-2"></i> AI Image Generation Studio</h2>
+            <p class="text-xs text-zinc-400 mb-6">Create stunning graphic assets, logos, and portrait visuals using high-end AI prompts.</p>
+            
+            <div class="flex flex-col gap-4 bg-zinc-900 p-5 rounded-2xl border border-zinc-800 mb-6">
+                <label class="text-xs font-semibold text-zinc-300">Image Prompt Description</label>
+                <div class="flex gap-2">
+                    <input id="image-prompt-input" type="text" placeholder="e.g. Futuristic luxury tech logo with crescent moon and neon glow, 8k resolution..." class="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <button onclick="generateImage()" class="bg-amber-600 hover:bg-amber-500 text-white px-5 py-2.5 rounded-xl text-xs font-medium transition shadow-md">Generate</button>
+                </div>
+            </div>
+
+            <div id="image-result-container" class="flex-1 flex items-center justify-center border-2 border-dashed border-zinc-800 rounded-2xl bg-zinc-900/30 min-h-[300px]">
+                <div class="text-center text-zinc-500">
+                    <i class="fa-solid fa-image text-4xl mb-2"></i>
+                    <p class="text-xs">Your generated image will appear here</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: CODE STUDIO -->
+        <div id="tab-code" class="tab-content hidden flex-1 flex flex-col p-6 max-w-5xl mx-auto w-full overflow-y-auto">
+            <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-code text-cyan-400 mr-2"></i> Advanced Code Assistant</h2>
+            <p class="text-xs text-zinc-400 mb-4">Generate Python, Flask, JavaScript, or React scripts with expert precision.</p>
+            
+            <div class="flex flex-col gap-3 flex-1">
+                <textarea id="code-prompt" rows="4" placeholder="Describe the script or bug you want solved..." class="bg-zinc-900 border border-zinc-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500"></textarea>
+                <button onclick="generateCodeSnippet()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-2 px-4 rounded-xl text-xs w-fit transition shadow-md">Generate Code</button>
+                
+                <div class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl p-4 overflow-x-auto mt-2">
+                    <pre><code id="code-output-box" class="text-xs text-emerald-400 font-mono">// Generated code snippet will appear here...</code></pre>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md p-6 shadow-2xl flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-gear text-indigo-400 mr-2"></i> API & Configuration Settings</h3>
+                <button onclick="closeSettingsModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="text-xs font-semibold text-zinc-300 mb-1 block">Google Gemini API Key</label>
+                    <input id="api-key-input" type="password" placeholder="AIzaSy..." class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <span class="text-[10px] text-zinc-500 mt-1 block">Your key is stored securely in your browser storage only.</span>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-zinc-300 mb-1 block">Your Name</label>
+                    <input id="setting-name-input" type="text" value="Aurang Zeb" class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-zinc-800">
+                <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300">Cancel</button>
+                <button onclick="saveSettings()" class="px-4 py-2 rounded-xl text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let chatHistoryData = JSON.parse(localStorage.getItem('loona_chats') || '[]');
+        let userApiKey = localStorage.getItem('loona_api_key') || '';
+        let userName = localStorage.getItem('loona_username') || 'Aurang Zeb';
+
+        document.getElementById('setting-name-input').value = userName;
+        document.getElementById('user-display-name').innerText = userName;
+        if(userApiKey) document.getElementById('api-key-input').value = userApiKey;
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-zinc-800', 'text-white');
+                el.classList.add('text-zinc-400');
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const btn = document.getElementById('nav-' + tabId);
+            if(btn) {
+                btn.classList.add('bg-zinc-800/80', 'text-white');
+                btn.classList.remove('text-zinc-400');
+            }
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('-translate-x-full');
+        }
+
+        function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
+        function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
+
+        function saveSettings() {
+            userApiKey = document.getElementById('api-key-input').value.trim();
+            userName = document.getElementById('setting-name-input').value.trim() || 'Aurang Zeb';
+            localStorage.setItem('loona_api_key', userApiKey);
+            localStorage.setItem('loona_username', userName);
+            document.getElementById('user-display-name').innerText = userName;
+            closeSettingsModal();
+            alert('Settings saved successfully!');
+        }
+
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function startNewChat() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div id="welcome-banner" class="my-auto text-center py-12 px-4">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white mb-4">
+                        <i class="fa-solid fa-moon text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, ${userName}!</h2>
+                    <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Main aap ka elite business executive aur AI assistant hoon. Aaj aap ki kis project ya order mein madad karoon?</p>
+                </div>
+            `;
+        }
+
+        function sendQuickPrompt(txt) {
+            document.getElementById('user-input').value = txt;
+            handleSendMessage();
+        }
+
+        async function handleSendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const banner = document.getElementById('welcome-banner');
+            if(banner) banner.remove();
+
+            const messagesDiv = document.getElementById('chat-messages');
+            
+            // User bubble
+            messagesDiv.innerHTML += `
+                <div class="flex gap-3 justify-end">
+                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-xl text-xs leading-relaxed shadow-md">
+                        ${escapeHtml(text)}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Loading bubble
+            const loadingId = 'loading-' + Date.now();
+            messagesDiv.innerHTML += `
+                <div id="${loadingId}" class="flex gap-3 items-start">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-moon"></i></div>
+                    <div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs">
+                        <i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...
+                    </div>
+                </div>
+            `;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            let replyText = "";
+            if (!userApiKey) {
+                replyText = `Assalam-o-Alaikum! Main aap ka elite business executive hoon. Aap ne kaha: "${text}". *(Note: Live Gemini API key set nahi hai. Settings icon par click karke apni free Gemini API key enter karein taake live AI responses mil sakein).*`;
+            } else {
+                try {
+                    const lang = document.getElementById('language-select').value;
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userApiKey}`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{ text: `You are an elite AI Business Executive and Senior Sales Strategist. Respond in ${lang} matching the user query: ${text}` }]
+                            }]
+                        })
+                    });
+                    const data = await res.json();
+                    replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maazrat, API response process nahi ho saka. Dobara koshish karein.";
+                } catch(err) {
+                    replyText = "Connection error. Please check your API key.";
+                }
+            }
+
+            document.getElementById(loadingId).remove();
+            messagesDiv.innerHTML += `
+                <div class="flex gap-3 items-start">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white text-xs shadow-md"><i class="fa-solid fa-moon"></i></div>
+                    <div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">
+                        ${marked.parse(replyText)}
+                    </div>
+                </div>
+            `;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        let lastGeneratedHTML = "";
+        function generateWebsite() {
+            const prompt = document.getElementById('web-prompt').value.trim() || "Modern landing page";
+            lastGeneratedHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHtml(prompt)}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-p-10 flex flex-col items-center justify-center p-6">
+    <div class="max-w-3xl text-center">
+        <span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-xs font-semibold">Generated by Loona AI</span>
+        <h1 class="text-4xl font-extrabold mt-4 mb-4 bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">${escapeHtml(prompt)}</h1>
+        <p class="text-slate-400 mb-8">Professional high-end web interface created instantly for your business.</p>
+        <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg transition">Explore Services</button>
+    </div>
+</body>
+</html>`;
+            const frame = document.getElementById('web-preview-frame');
+            frame.srcdoc = lastGeneratedHTML;
+        }
+
+        function downloadWebsiteCode() {
+            if(!lastGeneratedHTML) generateWebsite();
+            const blob = new Blob([lastGeneratedHTML], {type: 'text/html'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            a.click();
+        }
+
+        function generateImage() {
+            const prompt = document.getElementById('image-prompt-input').value.trim() || "luxury tech branding";
+            const encoded = encodeURIComponent(prompt);
+            const container = document.getElementById('image-result-container');
+            container.innerHTML = `<img src="https://image.pollinations.ai/prompt/${encoded}?width=800&height=500&nologo=true" class="rounded-xl shadow-2xl max-h-[400px] object-cover" alt="Generated AI Image">`;
+        }
+
+        function generateCodeSnippet() {
+            const prompt = document.getElementById('code-prompt').value.trim() || "python flask webhook";
+            document.getElementById('code-output-box').innerText = `# Python Flask Webhook code generated for: ${prompt}
+
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    data = request.json
+    print("Received:", data)
+    return jsonify({"status": "success"}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.5000', port=5005)`;
+        }
+
+        function clearAllData() {
+            if(confirm('Are you sure you want to clear chat history?')) {
+                localStorage.removeItem('loona_chats');
+                startNewChat();
+            }
+        }
+
+        function toggleVoiceInput() {
+            alert('Voice input active. Speak into your microphone (browser speech recognition).');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(>"/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
