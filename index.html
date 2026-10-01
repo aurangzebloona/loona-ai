@@ -40,14 +40,14 @@
     <!-- SIDEBAR -->
     <aside id="sidebar" class="w-64 bg-sidebarbg border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
         <div class="p-4 flex flex-col gap-4">
-            <!-- Professional International Brand Logo (Minimalist Tech Hexagon) -->
+            <!-- Brand Logo with "Loona" -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold text-sm tracking-wider">
-                        LA
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold text-xs tracking-wider">
+                        AI
                     </div>
                     <div>
-                        <h1 class="font-bold text-base tracking-wide text-white">Loona AI</h1>
+                        <h1 class="font-bold text-base tracking-wide text-white">Loona</h1>
                         <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-semibold px-1.5 py-0.5 bg-indigo-500/10 rounded">Enterprise</span>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
             <div class="relative">
                 <button onclick="toggleProfileMenu()" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-zinc-800/80 transition">
                     <div class="flex items-center gap-3">
-                        <div id="user-avatar" class="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white">LA</div>
+                        <div id="user-avatar" class="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white">LO</div>
                         <div class="text-left">
                             <h4 id="user-display-name" class="text-xs font-semibold text-white">Loona Admin</h4>
                             <span class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Enterprise Active</span>
@@ -124,8 +124,8 @@
         <div id="tab-chat" class="tab-content flex-1 flex flex-col h-[calc(100%-3.5rem)] overflow-hidden">
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6 max-w-4xl mx-auto w-full">
                 <div id="welcome-banner" class="my-auto text-center py-12 px-4">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white font-bold text-2xl tracking-wider mb-4">
-                        LA
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white font-bold text-xl tracking-wider mb-4">
+                        LOONA
                     </div>
                     <h2 class="text-2xl font-bold text-white mb-2">Welcome to Loona AI</h2>
                     <p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Your elite enterprise AI assistant and sales executive. How can we assist your business today?</p>
@@ -279,7 +279,7 @@
         function startNewChat() {
             document.getElementById('chat-messages').innerHTML = 
                 '<div id="welcome-banner" class="my-auto text-center py-12 px-4">' +
-                '<div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 mx-auto flex items-center justify-center shadow-xl text-white font-bold text-2xl tracking-wider mb-4">LA</div>' +
+                '<div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 mx-auto flex items-center justify-center shadow-xl text-white font-bold text-xl tracking-wider mb-4">LOONA</div>' +
                 '<h2 class="text-2xl font-bold text-white mb-2">Welcome to Loona AI</h2>' +
                 '<p class="text-zinc-400 text-sm max-w-md mx-auto mb-8">Your elite enterprise AI assistant and sales executive. How can we assist your business today?</p>' +
                 '</div>';
@@ -304,7 +304,7 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             var loadingId = 'loading-' + Date.now();
-            messagesDiv.innerHTML += '<div id="' + loadingId + '" class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs"><i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...</div></div>';
+            messagesDiv.innerHTML += '<div id="' + loadingId + '" class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-brain"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none px-4 py-3 text-xs"><i class="fa-solid fa-circle-notch fa-spin text-indigo-400 mr-2"></i> Thinking & Analyzing live data...</div></div>';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             var replyText = "";
@@ -330,7 +330,7 @@
             }
 
             document.getElementById(loadingId).remove();
-            messagesDiv.innerHTML += '<div class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs shadow-md"><i class="fa-solid fa-moon"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">' + (typeof marked !== 'undefined' ? marked.parse(replyText) : replyText) + '</div></div>';
+            messagesDiv.innerHTML += '<div class="flex gap-3 items-start"><div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs shadow-md"><i class="fa-solid fa-brain"></i></div><div class="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-2xl text-xs leading-relaxed shadow-sm">' + (typeof marked !== 'undefined' ? marked.parse(replyText) : replyText) + '</div></div>';
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
