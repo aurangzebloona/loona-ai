@@ -6,51 +6,166 @@
 <title>Loona AI</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; margin: 0; color: #1f1f1f; }
-  .hidden { display: none !important; }
-  .view { display: none; }
-  .view.show { display: flex; }
-  button { cursor: pointer; font-family: inherit; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; color: #1f1f1f; height: 100vh; display: flex; overflow: hidden; }
+  button { cursor: pointer; font-family: inherit; border: none; background: transparent; }
 
-  /* Sidebar */
-  #sidebar { width: 280px; background: #f0f4f9; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; height: 100vh; transition: margin-left .3s; }
-  #sidebar.collapsed { margin-left: -280px; }
+  /* ============ SIDEBAR ============ */
+  #sidebar {
+    width: 260px; background: #f0f4f9;
+    display: flex; flex-direction: column; justify-content: space-between;
+    flex-shrink: 0; height: 100vh;
+  }
+  #sidebar .top { padding: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 8px 6px; }
+  .brand-icon { width: 24px; height: 24px; }
+  .brand-name { font-weight: 600; font-size: 16px; }
 
-  /* Main */
-  main { flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100vh; }
+  .new-chat-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: #e8f0fe; color: #1967d2;
+    padding: 10px 20px 10px 16px; border-radius: 999px;
+    font-size: 14px; margin: 12px 6px; font-weight: 500;
+  }
+  .new-chat-btn:hover { background: #d2e3fc; }
 
-  /* Plus menu */
+  .nav-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; border-radius: 999px;
+    font-size: 13px; color: #1f1f1f; width: 100%; text-align: left;
+  }
+  .nav-btn:hover { background: #e4e8ed; }
+  .nav-btn i { width: 16px; color: #5f6368; }
+
+  .user-profile {
+    padding: 12px; border-top: 1px solid #dadce0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .user-info { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .user-name { font-size: 13px; font-weight: 600; }
+  .user-role { font-size: 11px; color: #5f6368; }
+
+  /* ============ MAIN ============ */
+  main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+  .top-bar {
+    height: 56px; display: flex; align-items: center; justify-content: flex-end;
+    padding: 0 24px; flex-shrink: 0;
+  }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #5f6368; font-size: 15px;
+  }
+  .icon-btn:hover { background: #f1f3f4; }
+
+  /* Chat area */
+  .chat-area {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 0 16px; overflow: hidden; position: relative;
+  }
+  .chat-scroll {
+    width: 100%; max-width: 760px; max-height: 55vh;
+    overflow-y: auto; display: flex; flex-direction: column;
+    gap: 20px; padding: 0 8px;
+  }
+  .welcome { text-align: center; padding: 20px; }
+  .welcome h1 { font-size: 42px; font-weight: 400; }
+
+  .msg-user {
+    align-self: flex-end; background: #e8f0fe;
+    padding: 12px 18px; border-radius: 20px;
+    max-width: 500px; font-size: 15px; word-wrap: break-word;
+  }
+  .msg-bot { padding: 6px 0; font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+
+  /* Input bar */
+  .input-wrapper {
+    width: 100%; max-width: 760px; margin: 20px auto 30px;
+    padding: 0 8px; position: relative;
+  }
+  .input-bar {
+    background: #f0f4f9; border-radius: 28px;
+    padding: 12px 18px; display: flex; align-items: center; gap: 10px;
+  }
+  .input-bar .plus {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #5f6368; font-size: 18px; flex-shrink: 0;
+  }
+  .input-bar .plus:hover { background: #e4e8ed; }
+  .input-bar input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 15px; color: #1f1f1f; font-family: inherit;
+  }
+  .input-bar .model-btn {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 13px; color: #5f6368; padding: 4px 8px; border-radius: 999px;
+  }
+  .input-bar .model-btn:hover { background: #e4e8ed; }
+  .input-bar .mic, .input-bar .send {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #5f6368; font-size: 15px;
+  }
+  .input-bar .mic:hover { background: #e4e8ed; }
+  .input-bar .send { background: #1a73e8; color: #fff; }
+  .input-bar .send:hover { background: #1557b0; }
+
+  /* ============ PLUS MENU ============ */
   .plus-menu {
-    display: none; position: absolute; bottom: 70px; left: 16px;
+    display: none; position: absolute;
+    bottom: 76px; left: 8px;
     background: #fff; border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,.15), 0 2px 6px rgba(0,0,0,.06);
-    width: 300px; padding: 10px; z-index: 999;
+    width: 300px; padding: 10px; z-index: 500;
   }
   .plus-menu.show { display: block; }
 
-  .item {
+  .menu-item {
     display: flex; align-items: center; gap: 14px;
-    padding: 11px 14px; border-radius: 12px; border: none;
-    background: transparent; font-size: 14px; color: #1f1f1f;
-    text-align: left; width: 100%; transition: background .12s;
+    padding: 11px 14px; border-radius: 12px;
+    font-size: 14px; color: #1f1f1f; width: 100%; text-align: left;
+    transition: background .12s;
   }
-  .item:hover { background: #f1f3f4; }
-  .item i:first-child { font-size: 17px; width: 22px; text-align: center; }
-  .divider { border: none; border-top: 1px solid #e8eaed; margin: 6px 4px; }
+  .menu-item:hover { background: #f1f3f4; }
+  .menu-item .m-icon { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+  .menu-divider { border: none; border-top: 1px solid #e8eaed; margin: 6px 4px; }
 
   /* Submenu */
   .has-sub { position: relative; }
   .sub-menu {
-    display: none; position: absolute; left: calc(100% + 6px); top: -8px;
+    display: none; position: absolute;
+    left: calc(100% + 6px); top: -8px;
     background: #fff; border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,.15);
-    width: 260px; padding: 10px; z-index: 1000;
+    width: 250px; padding: 10px; z-index: 600;
   }
   .has-sub:hover .sub-menu { display: block; }
-  .sub-menu .item { font-size: 13.5px; }
+  .sub-menu .menu-item { font-size: 13.5px; }
 
-  /* Icon colors */
+  /* Toggle */
+  .lab-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-radius: 12px;
+    font-size: 13.5px; cursor: pointer;
+  }
+  .lab-row:hover { background: #f1f3f4; }
+  .switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #dadce0; border-radius: 20px; transition: .2s; }
+  .slider::before { content: ""; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .switch input:checked + .slider { background: #1a73e8; }
+  .switch input:checked + .slider::before { transform: translateX(14px); }
+
+  /* Icons */
   .ic-blue { color: #1a73e8; }
   .ic-green { color: #34a853; }
   .ic-gray { color: #5f6368; }
@@ -59,238 +174,237 @@
   .ic-purple { color: #a142f4; }
   .ic-cyan { color: #00acc1; }
 
-  /* Toggle switch */
-  .lab-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 12px; cursor: pointer; font-size: 13.5px; }
-  .lab-row:hover { background: #f1f3f4; }
-  .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; inset: 0; background: #dadce0; border-radius: 20px; transition: .2s; }
-  .slider::before { content: ""; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s; }
-  .switch input:checked + .slider { background: #1a73e8; }
-  .switch input:checked + .slider::before { transform: translateX(14px); }
+  /* Canvas (hidden overlay) */
+  #canvasOverlay {
+    display: none; position: fixed; inset: 0;
+    background: #fff; z-index: 900; flex-direction: column;
+  }
+  #canvasOverlay.show { display: flex; }
+  #canvasOverlay .canvas-top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px; border-bottom: 1px solid #dadce0;
+  }
+  #canvasOverlay .canvas-body { flex: 1; display: flex; flex-direction: column; padding: 20px; gap: 12px; }
+  #canvasOverlay textarea {
+    padding: 12px; border: 1px solid #dadce0; border-radius: 12px;
+    min-height: 80px; font-family: inherit; font-size: 14px; outline: none;
+  }
+  #canvasOverlay iframe {
+    flex: 1; border: 1px solid #dadce0; border-radius: 12px; background: #fff;
+  }
+  .primary-btn { background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 500; }
+  .primary-btn:hover { background: #1557b0; }
+  .ghost-btn { background: #fff; border: 1px solid #dadce0; padding: 10px 20px; border-radius: 12px; font-size: 13px; }
 
-  /* Chat bubbles */
-  .msg-user { align-self: flex-end; background: #e8f0fe; padding: 12px 18px; border-radius: 20px; max-width: 500px; font-size: 15px; }
-  .msg-bot { padding: 8px 0; font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+  /* Settings modal */
+  #settingsModal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.4); z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  #settingsModal.show { display: flex; }
+  .modal-box { background: #fff; border-radius: 16px; padding: 24px; width: 400px; max-width: 90%; }
+  .modal-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+  .modal-box label { font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px; }
+  .modal-box input {
+    width: 100%; padding: 10px 12px; border: 1px solid #dadce0;
+    border-radius: 12px; font-size: 13px; outline: none; margin-bottom: 16px;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* Sidebar toggle on mobile */
+  @media (max-width: 768px) {
+    #sidebar { position: absolute; z-index: 100; transform: translateX(-100%); transition: transform .3s; }
+    #sidebar.open { transform: translateX(0); }
+  }
 </style>
 </head>
 <body>
 
 <!-- SIDEBAR -->
 <aside id="sidebar">
-  <div style="padding: 12px;">
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px 4px;">
-      <button id="sidebarToggle" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; font-size: 16px; color: #5f6368;">☰</button>
-      <svg width="24" height="24" viewBox="0 0 24 24">
-        <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" fill="url(#g)"/>
-        <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24">
-          <stop offset="0%" stop-color="#FF512F"/><stop offset="50%" stop-color="#DD2476"/><stop offset="100%" stop-color="#8A2387"/>
+  <div class="top">
+    <div class="brand">
+      <button id="sidebarToggle" style="width: 32px; height: 32px; border-radius: 50%; font-size: 15px; color: #5f6368;">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <svg class="brand-icon" viewBox="0 0 24 24">
+        <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" fill="url(#starGrad)"/>
+        <defs><linearGradient id="starGrad" x1="0" y1="0" x2="24" y2="24">
+          <stop offset="0%" stop-color="#FF512F"/>
+          <stop offset="50%" stop-color="#DD2476"/>
+          <stop offset="100%" stop-color="#8A2387"/>
         </linearGradient></defs>
       </svg>
-      <span style="font-weight: 600; font-size: 16px;">Loona</span>
+      <span class="brand-name">Loona</span>
     </div>
 
-    <div style="display: flex; background: #e9ecef; padding: 4px; border-radius: 999px; margin: 8px 4px;">
-      <button id="tabChat" style="flex: 1; padding: 6px; border-radius: 999px; border: none; background: #fff; font-size: 12px;">Chat</button>
-      <button id="tabWebsite" style="flex: 1; padding: 6px; border-radius: 999px; border: none; background: transparent; font-size: 12px;">Website</button>
-    </div>
-
-    <button id="newChatBtn" style="display: flex; align-items: center; gap: 12px; background: #e8f0fe; color: #1967d2; border: none; padding: 10px 24px 10px 16px; border-radius: 999px; font-size: 14px; margin: 4px;">
+    <button id="newChatBtn" class="new-chat-btn">
       <i class="fa-solid fa-plus"></i> New chat
     </button>
 
-    <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 8px; font-size: 13px;">
-      <button class="nav-item" style="display: flex; gap: 12px; padding: 10px 16px; border-radius: 999px; border: none; background: transparent; text-align: left; font-size: 13px;">
-        <i class="fa-solid fa-magnifying-glass" style="color: #5f6368; width: 16px;"></i> Search chats
-      </button>
-      <button id="navImages" class="nav-item" style="display: flex; gap: 12px; padding: 10px 16px; border-radius: 999px; border: none; background: transparent; text-align: left; font-size: 13px;">
-        <i class="fa-solid fa-image" style="color: #5f6368; width: 16px;"></i> Images &amp; Studio
-      </button>
-      <button id="navCode" class="nav-item" style="display: flex; gap: 12px; padding: 10px 16px; border-radius: 999px; border: none; background: transparent; text-align: left; font-size: 13px;">
-        <i class="fa-solid fa-code" style="color: #1a73e8; width: 16px;"></i> Code &amp; Scripts
-      </button>
-    </div>
+    <button class="nav-btn"><i class="fa-solid fa-magnifying-glass"></i> Search chats</button>
+    <button class="nav-btn"><i class="fa-solid fa-image"></i> Images & Studio</button>
+    <button class="nav-btn"><i class="fa-solid fa-code"></i> Code & Scripts</button>
   </div>
 
-  <div style="padding: 12px; border-top: 1px solid #dadce0;">
-    <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(90deg,#2563eb,#4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px;">
-          <i class="fa-solid fa-user"></i>
-        </div>
-        <div>
-          <div style="font-size: 13px; font-weight: 600;">Aurang Zeb</div>
-          <div style="font-size: 11px; color: #5f6368;">Creator</div>
-        </div>
+  <div class="user-profile">
+    <div class="user-info">
+      <div class="avatar"><i class="fa-solid fa-user"></i></div>
+      <div>
+        <div class="user-name">Aurang Zeb</div>
+        <div class="user-role">Creator</div>
       </div>
-      <button id="openSettings" style="width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #5f6368;">
-        <i class="fa-solid fa-gear"></i>
-      </button>
     </div>
+    <button id="openSettings" class="icon-btn" style="width: 32px; height: 32px;">
+      <i class="fa-solid fa-gear"></i>
+    </button>
   </div>
 </aside>
 
 <!-- MAIN -->
 <main>
-  <header style="height: 56px; display: flex; align-items: center; justify-content: flex-end; padding: 0 24px;">
-    <button id="newChatTop" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #5f6368; font-size: 16px;">
+  <div class="top-bar">
+    <button id="newChatTop" class="icon-btn" title="New chat">
       <i class="fa-solid fa-pen-to-square"></i>
     </button>
-  </header>
+  </div>
 
-  <!-- CHAT VIEW -->
-  <section class="view show" id="viewChat" style="flex: 1; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 40px; overflow: hidden;">
-    <div id="chatBox" style="width: 100%; max-width: 768px; padding: 0 16px; overflow-y: auto; max-height: 55vh; display: flex; flex-direction: column; gap: 20px;">
-      <div id="welcome" style="text-align: center; padding: 24px 16px;">
-        <h1 style="font-size: 44px; font-weight: 400; margin: 0;">What's next, Aurang?</h1>
+  <div class="chat-area">
+    <div id="chatScroll" class="chat-scroll">
+      <div id="welcome" class="welcome">
+        <h1>What's next, Aurang?</h1>
       </div>
     </div>
+  </div>
 
-    <div style="width: 100%; max-width: 768px; padding: 0 16px; margin-top: 24px; position: relative;">
+  <div class="input-wrapper">
 
-      <!-- PLUS MENU -->
-      <div id="plusMenu" class="plus-menu">
+    <!-- PLUS MENU -->
+    <div id="plusMenu" class="plus-menu">
+      <button id="btnUpload" class="menu-item">
+        <i class="fa-solid fa-arrow-up-from-bracket m-icon ic-blue"></i>
+        <span>Upload files</span>
+      </button>
 
-        <button id="btnUpload" class="item">
-          <i class="fa-solid fa-arrow-up-from-bracket ic-blue"></i>
-          <span>Upload files</span>
+      <button id="btnDrive" class="menu-item">
+        <i class="fa-brands fa-google-drive m-icon ic-green"></i>
+        <span>Add from Drive</span>
+      </button>
+
+      <div class="has-sub">
+        <button class="menu-item" style="justify-content: space-between;">
+          <span style="display: flex; align-items: center; gap: 14px;">
+            <i class="fa-solid fa-ellipsis m-icon ic-gray"></i>
+            <span>More uploads</span>
+          </span>
+          <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
         </button>
+        <div class="sub-menu">
+          <button class="menu-item alert-btn" data-msg="Google Photos connected"><i class="fa-solid fa-images m-icon ic-blue"></i> Google Photos</button>
+          <button class="menu-item alert-btn" data-msg="Avatar loaded"><i class="fa-solid fa-user-circle m-icon ic-purple"></i> Avatar</button>
+          <button class="menu-item alert-btn" data-msg="Import code tool"><i class="fa-solid fa-file-import m-icon ic-yellow"></i> Import code</button>
+          <button class="menu-item alert-btn" data-msg="Notebooks loaded"><i class="fa-solid fa-book m-icon ic-gray"></i> Notebooks</button>
+        </div>
+      </div>
 
-        <button id="btnDrive" class="item">
-          <i class="fa-brands fa-google-drive ic-green"></i>
-          <span>Add from Drive</span>
+      <hr class="menu-divider">
+
+      <button id="btnImage" class="menu-item">
+        <i class="fa-solid fa-image m-icon ic-blue"></i>
+        <span>Create image</span>
+      </button>
+
+      <button class="menu-item alert-btn" data-msg="Video creation tool active!">
+        <i class="fa-solid fa-clapperboard m-icon ic-red"></i>
+        <span>Create video</span>
+      </button>
+
+      <button class="menu-item alert-btn" data-msg="Music studio active!">
+        <i class="fa-solid fa-music m-icon ic-cyan"></i>
+        <span>Create music</span>
+      </button>
+
+      <button id="btnCanvas" class="menu-item">
+        <i class="fa-solid fa-palette m-icon ic-purple"></i>
+        <span>Canvas</span>
+      </button>
+
+      <div class="has-sub">
+        <button class="menu-item" style="justify-content: space-between;">
+          <span style="display: flex; align-items: center; gap: 14px;">
+            <i class="fa-solid fa-ellipsis m-icon ic-gray"></i>
+            <span>More tools</span>
+          </span>
+          <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
         </button>
-
-        <div class="has-sub">
-          <button class="item" style="justify-content: space-between;">
-            <span style="display: flex; align-items: center; gap: 14px;">
-              <i class="fa-solid fa-ellipsis ic-gray"></i>
-              <span>More uploads</span>
-            </span>
-            <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
+        <div class="sub-menu">
+          <button class="menu-item alert-btn" data-msg="Guided Learning enabled">
+            <i class="fa-regular fa-comment-dots m-icon ic-gray"></i> Guided Learning
           </button>
-          <div class="sub-menu">
-            <button class="item alert-btn" data-msg="Google Photos connected">
-              <i class="fa-solid fa-images ic-blue"></i> Google Photos
-            </button>
-            <button class="item alert-btn" data-msg="Avatar loaded">
-              <i class="fa-solid fa-user-circle ic-purple"></i> Avatar
-            </button>
-            <button class="item alert-btn" data-msg="Import code tool active">
-              <i class="fa-solid fa-file-import ic-yellow"></i> Import code
-            </button>
-            <button class="item alert-btn" data-msg="Notebooks loaded">
-              <i class="fa-solid fa-book ic-gray"></i> Notebooks
-            </button>
+          <div class="lab-row" id="labRow">
+            <span style="display: flex; align-items: center; gap: 12px;">
+              <i class="fa-solid fa-wand-magic-sparkles m-icon ic-blue"></i>
+              Personal Intelligence Labs
+            </span>
+            <label class="switch">
+              <input type="checkbox" id="labToggle" checked>
+              <span class="slider"></span>
+            </label>
           </div>
         </div>
-
-        <hr class="divider">
-
-        <button id="btnImage" class="item">
-          <i class="fa-solid fa-image ic-blue"></i>
-          <span>Create image</span>
-        </button>
-
-        <button class="item alert-btn" data-msg="Video creation tool active!">
-          <i class="fa-solid fa-clapperboard ic-red"></i>
-          <span>Create video</span>
-        </button>
-
-        <button class="item alert-btn" data-msg="Music studio active!">
-          <i class="fa-solid fa-music ic-cyan"></i>
-          <span>Create music</span>
-        </button>
-
-        <button id="btnCanvas" class="item">
-          <i class="fa-solid fa-palette ic-purple"></i>
-          <span>Canvas</span>
-        </button>
-
-        <div class="has-sub">
-          <button class="item" style="justify-content: space-between;">
-            <span style="display: flex; align-items: center; gap: 14px;">
-              <i class="fa-solid fa-ellipsis ic-gray"></i>
-              <span>More tools</span>
-            </span>
-            <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: #5f6368;"></i>
-          </button>
-          <div class="sub-menu">
-            <button class="item alert-btn" data-msg="Guided Learning enabled">
-              <i class="fa-regular fa-comment-dots ic-gray"></i> Guided Learning
-            </button>
-            <div class="lab-row" id="labRow">
-              <span style="display: flex; align-items: center; gap: 12px;">
-                <i class="fa-solid fa-wand-magic-sparkles ic-blue"></i>
-                Personal Intelligence Labs
-              </span>
-              <label class="switch">
-                <input type="checkbox" id="labToggle" checked>
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <input type="file" id="fileInput" class="hidden" multiple>
-
-      <!-- INPUT BAR -->
-      <div style="background: #f0f4f9; border-radius: 28px; padding: 14px 20px; display: flex; align-items: center; gap: 12px;">
-        <button id="plusBtn" style="width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent; color: #5f6368; font-size: 18px; flex-shrink: 0;">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-        <input id="chatInput" placeholder="Ask Loona" style="flex: 1; border: none; outline: none; font-size: 15px; background: transparent;">
-        <button id="modelPill" style="display: flex; align-items: center; gap: 4px; background: transparent; border: none; font-size: 13px; color: #5f6368;">
-          <span id="modelName">Flash-Lite</span> <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
-        </button>
-        <button id="voiceBtn" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #5f6368; font-size: 16px;">
-          <i class="fa-solid fa-microphone"></i>
-        </button>
-        <button id="sendBtn" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: #1a73e8; color: #fff; font-size: 14px;">
-          <i class="fa-solid fa-arrow-up"></i>
-        </button>
       </div>
     </div>
-  </section>
 
-  <!-- WEBSITE VIEW -->
-  <section class="view" id="viewWebsite" style="flex: 1; flex-direction: column; padding: 24px;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 16px;">Website Generator</h2>
-    <textarea id="webPrompt" placeholder="Website describe karein..." style="padding: 12px; border: 1px solid #dadce0; border-radius: 12px; min-height: 90px; margin-bottom: 12px;"></textarea>
-    <button id="genWebBtn" style="background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; border: none; align-self: flex-start;">Generate</button>
-    <iframe id="webFrame" style="flex: 1; border: 1px solid #dadce0; border-radius: 12px; margin-top: 16px; background: #fff;" sandbox="allow-scripts"></iframe>
-  </section>
+    <input type="file" id="fileInput" style="display: none;" multiple>
 
-  <!-- IMAGE VIEW -->
-  <section class="view" id="viewImage" style="flex: 1; flex-direction: column; padding: 24px; max-width: 900px; margin: 0 auto; width: 100%;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 16px;">Image Studio</h2>
-    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-      <input id="imgPrompt" placeholder="Image description..." style="flex: 1; padding: 10px 16px; border: 1px solid #dadce0; border-radius: 12px;">
-      <button id="genImgBtn" style="background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; border: none;">Generate</button>
+    <!-- INPUT BAR -->
+    <div class="input-bar">
+      <button id="plusBtn" class="plus">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+      <input id="chatInput" placeholder="Ask Loona" autocomplete="off">
+      <button id="modelBtn" class="model-btn">
+        <span id="modelName">Flash-Lite</span>
+        <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+      </button>
+      <button id="voiceBtn" class="mic">
+        <i class="fa-solid fa-microphone"></i>
+      </button>
+      <button id="sendBtn" class="send">
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
     </div>
-    <div id="imgBox" style="flex: 1; background: #fff; border: 1px solid #dadce0; border-radius: 16px; min-height: 350px; display: flex; align-items: center; justify-content: center; color: #5f6368;">Image will appear here</div>
-  </section>
-
-  <!-- CODE VIEW -->
-  <section class="view" id="viewCode" style="flex: 1; flex-direction: column; padding: 24px; max-width: 1000px; margin: 0 auto; width: 100%;">
-    <h2 style="font-size: 14px; font-weight: 600; margin: 0 0 16px;">Code Studio</h2>
-    <textarea id="codePrompt" placeholder="Code description..." style="padding: 12px; border: 1px solid #dadce0; border-radius: 12px; min-height: 90px; margin-bottom: 12px;"></textarea>
-    <button id="genCodeBtn" style="background: #1a73e8; color: #fff; padding: 10px 20px; border-radius: 12px; border: none; align-self: flex-start;">Generate</button>
-    <pre id="codeOut" style="flex: 1; background: #f1f3f4; border: 1px solid #dadce0; border-radius: 12px; padding: 16px; font-family: monospace; font-size: 12px; color: #1a73e8; overflow: auto; margin-top: 16px;">// Code will appear here...</pre>
-  </section>
+  </div>
 </main>
 
+<!-- CANVAS OVERLAY (Website/Code generator) -->
+<div id="canvasOverlay">
+  <div class="canvas-top">
+    <h3 style="font-size: 15px; font-weight: 600;">Canvas</h3>
+    <button id="closeCanvas" class="icon-btn">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="canvas-body">
+    <textarea id="canvasPrompt" placeholder="Describe the website or code you want..."></textarea>
+    <div style="display: flex; gap: 10px;">
+      <button id="generateCanvas" class="primary-btn">Generate</button>
+      <button id="downloadCanvas" class="ghost-btn">Download HTML</button>
+    </div>
+    <iframe id="canvasFrame" sandbox="allow-scripts"></iframe>
+  </div>
+</div>
+
 <!-- SETTINGS MODAL -->
-<div id="settingsModal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 2000; display: flex; align-items: center; justify-content: center;">
-  <div style="background: #fff; border-radius: 16px; width: 100%; max-width: 400px; padding: 24px;">
-    <h3 style="font-size: 14px; font-weight: 700; margin: 0 0 16px;">Settings</h3>
-    <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px;">Gemini API Key (optional)</label>
-    <input id="apiKey" type="password" placeholder="AIzaSy..." style="width: 100%; padding: 8px 12px; border: 1px solid #dadce0; border-radius: 12px; margin-bottom: 16px;">
-    <div style="display: flex; justify-content: flex-end; gap: 8px;">
-      <button id="closeSettings" style="padding: 8px 16px; border-radius: 12px; border: none; background: #f1f3f4;">Cancel</button>
-      <button id="saveSettings" style="padding: 8px 16px; border-radius: 12px; border: none; background: #1a73e8; color: #fff;">Save</button>
+<div id="settingsModal">
+  <div class="modal-box">
+    <h3>Settings</h3>
+    <label>Gemini API Key (optional)</label>
+    <input id="apiKey" type="password" placeholder="AIzaSy...">
+    <div class="modal-actions">
+      <button id="closeSettings" class="ghost-btn">Cancel</button>
+      <button id="saveSettings" class="primary-btn">Save</button>
     </div>
   </div>
 </div>
@@ -298,7 +412,6 @@
 <script>
 (function () {
   "use strict";
-
   function $(id) { return document.getElementById(id); }
 
   var userApiKey = localStorage.getItem('loona_api_key') || '';
@@ -321,12 +434,10 @@
     e.stopPropagation();
     $("fileInput").click();
   });
-
   $("fileInput").addEventListener("change", function () {
-    var files = this.files;
-    if (files && files.length > 0) {
+    if (this.files.length > 0) {
       var names = [];
-      for (var i = 0; i < files.length; i++) names.push(files[i].name);
+      for (var i = 0; i < this.files.length; i++) names.push(this.files[i].name);
       $("chatInput").value = "[Attached: " + names.join(", ") + "] " + $("chatInput").value;
     }
     $("plusMenu").classList.remove("show");
@@ -340,26 +451,67 @@
   });
 
   /* ---------- ALERT BUTTONS ---------- */
-  var alertBtns = document.querySelectorAll(".alert-btn");
-  for (var i = 0; i < alertBtns.length; i++) {
-    alertBtns[i].addEventListener("click", function (e) {
+  document.querySelectorAll(".alert-btn").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
       e.stopPropagation();
       alert(this.getAttribute("data-msg"));
     });
-  }
+  });
 
   /* ---------- CREATE IMAGE ---------- */
   $("btnImage").addEventListener("click", function (e) {
     e.stopPropagation();
-    switchView("image");
     $("plusMenu").classList.remove("show");
+    var p = prompt("Image description likhein:");
+    if (!p) return;
+    var welcome = $("welcome");
+    if (welcome) welcome.remove();
+    var botDiv = document.createElement("div");
+    botDiv.className = "msg-bot";
+    botDiv.innerHTML = 'Generating image...<br><img src="https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?nologo=true&seed=' + Date.now() + '" style="max-width: 400px; border-radius: 12px; margin-top: 10px;">';
+    $("chatScroll").appendChild(botDiv);
+    $("chatScroll").scrollTop = $("chatScroll").scrollHeight;
   });
 
   /* ---------- CANVAS ---------- */
   $("btnCanvas").addEventListener("click", function (e) {
     e.stopPropagation();
-    switchView("website");
     $("plusMenu").classList.remove("show");
+    $("canvasOverlay").classList.add("show");
+  });
+  $("closeCanvas").addEventListener("click", function () {
+    $("canvasOverlay").classList.remove("show");
+  });
+  $("generateCanvas").addEventListener("click", function () {
+    var p = $("canvasPrompt").value.trim();
+    if (!p) { alert("Prompt likhein"); return; }
+    $("generateCanvas").textContent = "Ban rahi...";
+    fetch("https://text.pollinations.ai/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai",
+        messages: [
+          { role: "system", content: "Output ONLY a complete HTML file. No markdown, no explanation." },
+          { role: "user", content: "Build a website: " + p }
+        ]
+      })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var html = d.choices[0].message.content.replace(/^```[a-z]*\s*/i, "").replace(/```\s*$/, "").trim();
+      $("canvasFrame").srcdoc = html;
+      window._lastHTML = html;
+      $("generateCanvas").textContent = "Generate";
+    })
+    .catch(function () { $("generateCanvas").textContent = "Generate"; alert("Error"); });
+  });
+  $("downloadCanvas").addEventListener("click", function () {
+    if (!window._lastHTML) { alert("Pehle generate karein."); return; }
+    var blob = new Blob([window._lastHTML], { type: "text/html" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'index.html'; a.click();
   });
 
   /* ---------- LAB TOGGLE ---------- */
@@ -368,44 +520,27 @@
     var t = $("labToggle");
     t.checked = !t.checked;
   });
-  $("labToggle").addEventListener("click", function (e) {
-    e.stopPropagation();
-  });
+  $("labToggle").addEventListener("click", function (e) { e.stopPropagation(); });
 
   /* ---------- SIDEBAR ---------- */
   $("sidebarToggle").addEventListener("click", function () {
-    $("sidebar").classList.toggle("collapsed");
+    $("sidebar").classList.toggle("open");
   });
-
-  /* ---------- VIEW SWITCHER ---------- */
-  function switchView(name) {
-    var views = document.querySelectorAll(".view");
-    for (var i = 0; i < views.length; i++) views[i].classList.remove("show");
-    if (name === "chat") $("viewChat").classList.add("show");
-    if (name === "website") $("viewWebsite").classList.add("show");
-    if (name === "image") $("viewImage").classList.add("show");
-    if (name === "code") $("viewCode").classList.add("show");
-  }
-
-  $("tabChat").addEventListener("click", function () { switchView("chat"); });
-  $("tabWebsite").addEventListener("click", function () { switchView("website"); });
-  $("navImages").addEventListener("click", function () { switchView("image"); });
-  $("navCode").addEventListener("click", function () { switchView("code"); });
 
   /* ---------- NEW CHAT ---------- */
   function newChat() {
-    $("chatBox").innerHTML = '<div id="welcome" style="text-align: center; padding: 24px 16px;"><h1 style="font-size: 44px; font-weight: 400; margin: 0;">What\'s next, Aurang?</h1></div>';
+    $("chatScroll").innerHTML = '<div id="welcome" class="welcome"><h1>What\'s next, Aurang?</h1></div>';
   }
   $("newChatBtn").addEventListener("click", newChat);
   $("newChatTop").addEventListener("click", newChat);
 
-  /* ---------- SETTINGS MODAL ---------- */
-  $("openSettings").addEventListener("click", function () { $("settingsModal").classList.remove("hidden"); });
-  $("closeSettings").addEventListener("click", function () { $("settingsModal").classList.add("hidden"); });
+  /* ---------- SETTINGS ---------- */
+  $("openSettings").addEventListener("click", function () { $("settingsModal").classList.add("show"); });
+  $("closeSettings").addEventListener("click", function () { $("settingsModal").classList.remove("show"); });
   $("saveSettings").addEventListener("click", function () {
     userApiKey = $("apiKey").value.trim();
     localStorage.setItem('loona_api_key', userApiKey);
-    $("settingsModal").classList.add("hidden");
+    $("settingsModal").classList.remove("show");
     alert("Saved!");
   });
 
@@ -421,12 +556,13 @@
     var userDiv = document.createElement("div");
     userDiv.className = "msg-user";
     userDiv.textContent = text;
-    $("chatBox").appendChild(userDiv);
+    $("chatScroll").appendChild(userDiv);
 
     var botDiv = document.createElement("div");
     botDiv.className = "msg-bot";
     botDiv.textContent = "Soch raha hoon...";
-    $("chatBox").appendChild(botDiv);
+    $("chatScroll").appendChild(botDiv);
+    $("chatScroll").scrollTop = $("chatScroll").scrollHeight;
 
     fetch("https://text.pollinations.ai/openai", {
       method: "POST",
@@ -440,15 +576,15 @@
       })
     })
     .then(function (r) { return r.json(); })
-    .then(function (d) { botDiv.textContent = d.choices[0].message.content; })
+    .then(function (d) {
+      botDiv.textContent = d.choices[0].message.content;
+      $("chatScroll").scrollTop = $("chatScroll").scrollHeight;
+    })
     .catch(function () { botDiv.textContent = "Network error. Dobara try karein."; });
   });
 
   $("chatInput").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      $("sendBtn").click();
-    }
+    if (e.key === "Enter") { e.preventDefault(); $("sendBtn").click(); }
   });
 
   /* ---------- VOICE ---------- */
@@ -462,64 +598,14 @@
   });
 
   /* ---------- MODEL PILL ---------- */
-  $("modelPill").addEventListener("click", function () {
+  $("modelBtn").addEventListener("click", function () {
     var models = ["Flash-Lite", "3.5 Flash", "3.1 Pro", "Extended Thinking"];
     var current = $("modelName").textContent;
     var idx = models.indexOf(current);
-    var next = models[(idx + 1) % models.length];
-    $("modelName").textContent = next;
+    $("modelName").textContent = models[(idx + 1) % models.length];
   });
 
-  /* ---------- WEBSITE BUILDER ---------- */
-  $("genWebBtn").addEventListener("click", function () {
-    var p = $("webPrompt").value.trim();
-    if (!p) { alert("Prompt likhein."); return; }
-    $("genWebBtn").textContent = "Ban rahi...";
-    fetch("https://text.pollinations.ai/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "openai",
-        messages: [
-          { role: "system", content: "Output ONLY complete HTML file. No markdown, no explanation." },
-          { role: "user", content: "Build a website: " + p }
-        ]
-      })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
-      var html = d.choices[0].message.content.replace(/^```[a-z]*\s*/i, "").replace(/```\s*$/, "").trim();
-      $("webFrame").srcdoc = html;
-      $("genWebBtn").textContent = "Generate";
-    })
-    .catch(function () { $("genWebBtn").textContent = "Generate"; alert("Error"); });
-  });
-
-  /* ---------- IMAGE STUDIO ---------- */
-  $("genImgBtn").addEventListener("click", function () {
-    var p = $("imgPrompt").value.trim() || "luxury tech branding";
-    $("imgBox").innerHTML = '<img src="https://image.pollinations.ai/prompt/' + encodeURIComponent(p) + '?nologo=true&seed=' + Date.now() + '" style="max-width: 100%; max-height: 100%; border-radius: 12px;">';
-  });
-
-  /* ---------- CODE STUDIO ---------- */
-  $("genCodeBtn").addEventListener("click", function () {
-    var p = $("codePrompt").value.trim();
-    if (!p) { alert("Prompt likhein."); return; }
-    $("codeOut").textContent = "Ban raha...";
-    fetch("https://text.pollinations.ai/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "openai",
-        messages: [{ role: "user", content: "Generate code only, no explanation: " + p }]
-      })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (d) { $("codeOut").textContent = d.choices[0].message.content; })
-    .catch(function () { $("codeOut").textContent = "Error"; });
-  });
-
-  console.log("✅ Loona AI ready — click the + button in input bar");
+  console.log("✅ Loona AI ready — click the + button.");
 })();
 </script>
 </body>
