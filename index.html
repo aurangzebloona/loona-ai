@@ -1,283 +1,481 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Loona AI</title>
-<style>
-:root{--bg:#0f1117;--side:#14161f;--panel:#1a1d29;--line:#262a3a;--text:#e8eaf2;--muted:#8b90a5;--accent:#5b4df5;--green:#22c55e}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;overflow:hidden}
-aside{width:260px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px;gap:12px;flex-shrink:0}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.logo{width:38px;height:38px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font-size:18px}
-.badge{display:inline-block;font-size:10px;letter-spacing:.08em;background:#2a2d45;color:#a9a3ff;padding:2px 8px;border-radius:5px;margin-top:2px}
-.btn{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 14px;font-size:14px;font-weight:600;cursor:pointer}
-.btn:hover{filter:brightness(1.1)}
-.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
-nav{display:flex;flex-direction:column;gap:4px}
-nav button{display:flex;align-items:center;gap:12px;background:none;border:0;color:var(--text);padding:12px;border-radius:10px;font-size:14px;cursor:pointer;text-align:left}
-nav button:hover{background:#1d2030}
-nav button.active{background:#232637}
-.recent{flex:1;overflow-y:auto;min-height:0}
-.recent h4{font-size:11px;letter-spacing:.1em;color:var(--muted);margin:8px 4px}
-.recent div{padding:8px 10px;border-radius:8px;font-size:13px;color:var(--muted);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.recent div:hover{background:#1d2030;color:var(--text)}
-.user{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:12px;font-size:13px}
-.user small{color:var(--green);display:block}
-main{flex:1;display:flex;flex-direction:column;min-width:0}
-.view{display:none;flex:1;flex-direction:column;min-height:0}
-.view.show{display:flex}
-header{padding:16px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
-header h2{font-size:17px}
-.scroll{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:14px}
-.msg{max-width:760px;padding:12px 16px;border-radius:14px;line-height:1.55;font-size:14.5px;white-space:pre-wrap;word-wrap:break-word}
-.msg.user{align-self:flex-end;background:var(--accent)}
-.msg.bot{align-self:flex-start;background:var(--panel);border:1px solid var(--line)}
-.msg.err{border-color:#7f1d1d;color:#fca5a5}
-.bar{display:flex;gap:10px;padding:16px 24px;border-top:1px solid var(--line)}
-input,textarea{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:10px;font:inherit;font-size:14px;outline:none}
-input:focus,textarea:focus{border-color:var(--accent)}
-textarea{resize:vertical;min-height:90px}
-.pad{padding:24px;display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;overflow-y:auto}
-iframe{width:100%;flex:1;min-height:360px;border:1px solid var(--line);border-radius:12px;background:#fff}
-.imgbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;min-height:300px;display:grid;place-items:center;color:var(--muted);overflow:hidden}
-.imgbox img{max-width:100%;max-height:60vh;display:block}
-pre{background:#0b0d14;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:13px;line-height:1.5;flex:1;white-space:pre-wrap}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-@media(max-width:760px){aside{width:72px;padding:10px}.brand span,.badge,nav button span,.recent,.user div,.btn.new span{display:none}nav button{justify-content:center}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loona AI - Enterprise Intelligence Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f1117',
+                        sidebarbg: '#14161f',
+                        panelbg: '#1a1d29',
+                        bordercolor: '#262a3a',
+                        accent: '#5b4df5',
+                        accenthover: '#483dd4',
+                        textmain: '#e8eaf2',
+                        textmuted: '#8b90a5'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Marked.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f1117; color: #e8eaf2; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #262a3a; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3c415c; }
+        .markdown-body pre { background: #0b0d14; padding: 12px; border-radius: 8px; margin: 8px 0; overflow-x: auto; border: 1px solid #262a3a; }
+        .markdown-body code { font-family: monospace; font-size: 13px; color: #a9a3ff; }
+        .markdown-body p { margin-bottom: 8px; line-height: 1.6; }
+    </style>
 </head>
-<body>
+<body class="h-screen flex overflow-hidden">
 
-<aside>
-  <div class="brand"><div class="logo">✳</div><div>Loona<br><span class="badge">ENTERPRISE</span></div></div>
-  <button class="btn new" id="newChat">+ <span>New Workspace / Chat</span></button>
-  <nav id="nav">
-    <button data-view="chat" class="active">💬 <span>AI Assistant</span></button>
-    <button data-view="web">🖥️ <span>Website Builder</span></button>
-    <button data-view="image">🎨 <span>Image Studio</span></button>
-    <button data-view="code">&lt;/&gt; <span>Code &amp; Scripts</span></button>
-  </nav>
-  <div class="recent"><h4>RECENT SESSIONS</h4><div id="recentList"></div></div>
-  <div class="user">👤 <div><b>Loona Admin</b><small>● Enterprise Active</small></div></div>
-</aside>
+    <!-- SIDEBAR (Claude / ChatGPT Pro Style) -->
+    <aside id="sidebar" class="w-64 bg-sidebarbg border-r border-bordercolor flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0">
+        <div class="p-4 flex flex-col gap-3">
+            <!-- Brand Logo -->
+            <div class="flex items-center justify-between pb-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-accent flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-accent/20">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base tracking-wide text-white leading-tight">Loona AI</h1>
+                        <span class="text-[9px] uppercase tracking-widest text-indigo-400 font-semibold px-1.5 py-0.5 bg-accent/10 rounded">Enterprise Pro</span>
+                    </div>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-textmuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
 
-<main>
-  <!-- CHAT -->
-  <section class="view show" id="view-chat">
-    <header><h2>AI Assistant</h2>
-      <div class="row"><button class="btn ghost" id="voiceBtn">🎤 Voice</button><button class="btn ghost" id="clearBtn">Clear all</button></div></header>
-    <div class="scroll" id="chatBox"></div>
-    <div class="bar"><input id="chatInput" placeholder="Kuch bhi poochhein..." autocomplete="off"><button class="btn" id="sendBtn">Send</button></div>
-  </section>
+            <!-- New Chat Button -->
+            <button onclick="startNewChat()" class="w-full bg-accent hover:bg-accenthover text-white font-medium py-2.5 px-4 rounded-xl flex items-center gap-2.5 transition shadow-sm text-sm">
+                <i class="fa-solid fa-plus text-xs"></i> New Workspace / Chat
+            </button>
 
-  <!-- WEBSITE BUILDER -->
-  <section class="view" id="view-web">
-    <header><h2>Website Builder</h2>
-      <div class="row"><button class="btn" id="genWebBtn">Generate</button><button class="btn ghost" id="dlWebBtn">Download index.html</button></div></header>
-    <div class="pad">
-      <textarea id="webPrompt" placeholder="Website ke baare mein likhein, e.g. Faisalabad ke textile business ki landing page"></textarea>
-      <iframe id="webFrame" sandbox="allow-scripts"></iframe>
+            <!-- Navigation Tabs -->
+            <div class="flex flex-col gap-1 mt-2">
+                <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-[#232637] text-white transition">
+                    <i class="fa-solid fa-comments w-5 text-indigo-400"></i> AI Assistant
+                </button>
+                <button onclick="switchTab('website')" id="nav-website" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-textmuted hover:bg-[#1d2030] hover:text-white transition">
+                    <i class="fa-solid fa-laptop-code w-5 text-emerald-400"></i> Website Builder
+                </button>
+                <button onclick="switchTab('image')" id="nav-image" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-textmuted hover:bg-[#1d2030] hover:text-white transition">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5 text-amber-400"></i> Image Studio
+                </button>
+                <button onclick="switchTab('code')" id="nav-code" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-textmuted hover:bg-[#1d2030] hover:text-white transition">
+                    <i class="fa-solid fa-code w-5 text-cyan-400"></i> Code & Scripts
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat History List -->
+        <div class="flex-1 overflow-y-auto px-4 py-2 border-t border-bordercolor/50">
+            <span class="text-[10px] font-semibold text-textmuted uppercase tracking-wider px-1">Recent Sessions</span>
+            <div id="recentList" class="flex flex-col gap-1 mt-2"></div>
+        </div>
+
+        <!-- User Profile & Settings Footer -->
+        <div class="p-4 border-t border-bordercolor bg-[#14161f]/50">
+            <div class="relative">
+                <button onclick="openSettingsModal()" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-[#1d2030] transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white">LA</div>
+                        <div class="text-left">
+                            <h4 id="user-display-name" class="text-xs font-semibold text-white">Loona Admin</h4>
+                            <span class="text-[9px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[5px]"></i> Enterprise Active</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-gear text-xs text-textmuted"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+        
+        <!-- Top Header Bar -->
+        <header class="h-14 border-b border-bordercolor flex items-center justify-between px-6 bg-darkbg/80 backdrop-blur z-20">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="text-textmuted hover:text-white md:hidden text-lg"><i class="fa-solid fa-bars"></i></button>
+                <h2 id="header-title" class="font-semibold text-sm text-white">AI Assistant & Executive Studio</h2>
+            </div>
+            <div class="flex items-center gap-3">
+                <select id="language-select" class="bg-panelbg text-textmain text-xs rounded-xl px-3 py-1.5 border border-bordercolor focus:outline-none focus:border-accent">
+                    <option value="Roman Urdu">Roman Urdu</option>
+                    <option value="English">English</option>
+                    <option value="Urdu">اردو</option>
+                </select>
+                <button onclick="openSettingsModal()" class="bg-panelbg hover:bg-[#232637] text-textmuted hover:text-white w-8 h-8 rounded-xl flex items-center justify-center text-xs transition border border-bordercolor"><i class="fa-solid fa-key"></i></button>
+            </div>
+        </header>
+
+        <!-- TAB 1: AI CHAT INTERFACE -->
+        <section class="view show flex-1 flex flex-col h-[calc(100%-3.5rem)] overflow-hidden" id="view-chat">
+            <div id="chatBox" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-4 max-w-4xl mx-auto w-full">
+                <!-- Welcome Banner -->
+                <div id="welcome-banner" class="my-auto text-center py-12 px-4">
+                    <div class="w-16 h-16 rounded-2xl bg-accent mx-auto flex items-center justify-center shadow-xl shadow-accent/30 text-white text-2xl mb-4">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, Loona Admin!</h2>
+                    <p class="text-textmuted text-sm max-w-md mx-auto mb-6">Main aap ka enterprise AI assistant hoon. Aaj aap ki kis project ya business inquiry mein madad karoon?</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto text-left">
+                        <div onclick="sendQuickPrompt('Aaj ke gold rates aur market trends ki tafseel batao')" class="p-3.5 rounded-xl bg-panelbg border border-bordercolor hover:border-accent cursor-pointer transition">
+                            <h4 class="text-xs font-semibold text-white mb-1"><i class="fa-solid fa-chart-line text-indigo-400 mr-2"></i> Market & Gold Rates</h4>
+                            <p class="text-[11px] text-textmuted">Check live market data and trends.</p>
+                        </div>
+                        <div onclick="sendQuickPrompt('Ek high-end e-commerce store ke liye sales pitch likho')" class="p-3.5 rounded-xl bg-panelbg border border-bordercolor hover:border-accent cursor-pointer transition">
+                            <h4 class="text-xs font-semibold text-white mb-1"><i class="fa-solid fa-bullhorn text-emerald-400 mr-2"></i> E-Commerce Sales Pitch</h4>
+                            <p class="text-[11px] text-textmuted">Draft professional client conversion scripts.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ChatGPT / Claude Style Input Bar -->
+            <div class="p-4 bg-darkbg border-t border-bordercolor">
+                <div class="max-w-4xl mx-auto bg-panelbg border border-bordercolor rounded-2xl p-2.5 shadow-lg focus-within:border-accent transition flex flex-col gap-2">
+                    <textarea id="chatInput" rows="1" placeholder="Kuch bhi poochhein (e.g. business strategy, coding, or market analysis)..." class="w-full bg-transparent text-sm text-textmain px-2 py-1 focus:outline-none resize-none max-h-32"></textarea>
+                    <div class="flex items-center justify-between px-2 pt-1 border-t border-bordercolor/40">
+                        <div class="flex items-center gap-2">
+                            <button id="voiceBtn" class="text-textmuted hover:text-white text-xs px-2.5 py-1.5 rounded-lg hover:bg-[#232637] transition flex items-center gap-1.5"><i class="fa-solid fa-microphone text-indigo-400"></i> Voice</button>
+                            <button id="clearBtn" class="text-textmuted hover:text-red-400 text-xs px-2.5 py-1.5 rounded-lg hover:bg-[#232637] transition flex items-center gap-1.5"><i class="fa-solid fa-trash"></i> Clear All</button>
+                        </div>
+                        <button id="sendBtn" class="bg-accent hover:bg-accenthover text-white w-9 h-9 rounded-xl flex items-center justify-center transition shadow-md"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: WEBSITE BUILDER -->
+        <section class="view hidden flex-1 flex flex-col h-[calc(100%-3.5rem)]" id="view-web">
+            <header class="border-b border-bordercolor flex justify-between items-center px-6 py-3">
+                <h2 class="text-sm font-semibold text-white">Instant Website & Landing Page Generator</h2>
+                <div class="flex gap-2">
+                    <button class="btn" id="genWebBtn" style="background:var(--accent);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">Generate Code</button>
+                    <button class="btn ghost" id="dlWebBtn" style="background:transparent;border:1px solid var(--bordercolor);color:var(--textmain);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer">Download HTML</button>
+                </div>
+            </header>
+            <div class="p-6 flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
+                <textarea id="webPrompt" placeholder="Website ke baare mein tafseel likhein, e.g. Faisalabad ke textile business ke liye luxury landing page..." style="background:var(--panelbg);border:1px solid var(--bordercolor);color:var(--textmain);padding:12px;border-radius:12px;font:inherit;font-size:13px;outline:none;min-height:90px;resize:vertical"></textarea>
+                <iframe id="webFrame" class="w-full flex-1 min-h-[360px] border border-bordercolor rounded-xl bg-white" sandbox="allow-scripts"></iframe>
+            </div>
+        </section>
+
+        <!-- TAB 3: IMAGE STUDIO -->
+        <section class="view hidden flex-1 flex flex-col h-[calc(100%-3.5rem)] p-6 max-w-4xl mx-auto w-full overflow-y-auto" id="view-image">
+            <header class="border-b border-bordercolor pb-3 mb-6"><h2 class="text-sm font-semibold text-white">AI Image Generation Studio</h2></header>
+            <div class="flex gap-3 mb-6">
+                <input id="imgPrompt" placeholder="Image ka description likhein (English behtar chalta hai)..." class="flex-1">
+                <button id="genImgBtn" class="bg-accent hover:bg-accenthover text-white px-5 py-2.5 rounded-xl text-xs font-semibold transition">Generate</button>
+            </div>
+            <div id="imgBox" class="flex-1 bg-panelbg border border-bordercolor rounded-2xl min-h-[350px] flex items-center justify-center text-textmuted text-xs">Yahan generated image aayegi</div>
+        </section>
+
+        <!-- TAB 4: CODE & SCRIPTS -->
+        <section class="view hidden flex-1 flex flex-col h-[calc(100%-3.5rem)] p-6 max-w-5xl mx-auto w-full overflow-y-auto" id="view-code">
+            <header class="border-b border-bordercolor pb-3 mb-4 flex justify-between items-center">
+                <h2 class="text-sm font-semibold text-white">Advanced Code & Script Studio</h2>
+                <button id="genCodeBtn" class="bg-accent hover:bg-accenthover text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Generate Code</button>
+            </header>
+            <textarea id="codePrompt" placeholder="Kis cheez ka code chahiye? e.g. Flask webhook jo POST request receive kare..." class="mb-4 min-h-[90px]"></textarea>
+            <pre id="codeOut" class="flex-1 bg-[#0b0d14] border border-bordercolor rounded-xl p-4 font-mono text-xs text-indigo-300 overflow-auto">// Generated code snippet will appear here...</pre>
+        </section>
+
+    </main>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-panelbg border border-bordercolor rounded-2xl w-full max-w-md p-6 shadow-2xl flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-bordercolor pb-3">
+                <h3 class="font-bold text-sm text-white"><i class="fa-solid fa-gear text-accent mr-2"></i> API & Configuration Settings</h3>
+                <button onclick="closeSettingsModal()" class="text-textmuted hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="text-xs font-semibold text-textmain mb-1 block">Google Gemini API Key (Optional)</label>
+                    <input id="api-key-input" type="password" placeholder="AIzaSy..." class="w-full bg-[#0f1117] border border-bordercolor rounded-xl px-3 py-2 text-xs text-textmain focus:outline-none focus:border-accent">
+                    <span class="text-[10px] text-textmuted mt-1 block">Your key is stored securely in your browser storage only.</span>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-bordercolor">
+                <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs bg-sidebarbg hover:bg-[#232637] text-textmuted">Cancel</button>
+                <button onclick="saveSettings()" class="px-4 py-2 rounded-xl text-xs bg-accent hover:bg-accenthover text-white font-medium">Save Settings</button>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- IMAGE -->
-  <section class="view" id="view-image">
-    <header><h2>Image Studio</h2></header>
-    <div class="pad">
-      <div class="row"><input id="imgPrompt" placeholder="Image ka description likhein (English behtar chalta hai)"><button class="btn" id="genImgBtn">Generate</button></div>
-      <div class="imgbox" id="imgBox">Yahan image aayegi</div>
-    </div>
-  </section>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+    (function () {
+        "use strict";
 
-  <!-- CODE -->
-  <section class="view" id="view-code">
-    <header><h2>Code &amp; Scripts</h2><button class="btn" id="genCodeBtn">Generate</button></header>
-    <div class="pad">
-      <textarea id="codePrompt" placeholder="Kis cheez ka code chahiye? e.g. Flask webhook jo POST receive kare"></textarea>
-      <pre id="codeOut">Code yahan dikhega...</pre>
-    </div>
-  </section>
-</main>
+        var KEY = "loona_chat_enterprise_v1";
+        var history = [];
+        var lastHTML = "";
+        var userApiKey = localStorage.getItem('loona_api_key') || '';
 
-<script>
-(function () {
-  "use strict";
+        function $(id) { return document.getElementById(id); }
 
-  var KEY = "loona_chat_v1";
-  var SYSTEM = "You are Loona AI, a helpful assistant. Reply in the same language the user writes in (Urdu, Roman Urdu or English).";
-  var history = [];
-  var lastHTML = "";
+        if(userApiKey) $("api-key-input").value = userApiKey;
 
-  function $(id) { return document.getElementById(id); }
+        function openSettingsModal() { $("settings-modal").classList.remove("hidden"); }
+        function closeSettingsModal() { $("settings-modal").classList.add("hidden"); }
+        window.openSettingsModal = openSettingsModal;
+        window.closeSettingsModal = closeSettingsModal;
 
-  /* ---------- Navigation ---------- */
-  var navButtons = document.querySelectorAll("#nav button");
-  navButtons.forEach(function (b) {
-    b.addEventListener("click", function () {
-      navButtons.forEach(function (x) { x.classList.remove("active"); });
-      b.classList.add("active");
-      document.querySelectorAll(".view").forEach(function (v) { v.classList.remove("show"); });
-      $("view-" + b.getAttribute("data-view")).classList.add("show");
-    });
-  });
+        window.saveSettings = function() {
+            userApiKey = $("api-key-input").value.trim();
+            localStorage.setItem('loona_api_key', userApiKey);
+            closeSettingsModal();
+            alert("Settings saved successfully!");
+        };
 
-  /* ---------- AI call (Pollinations, no key needed) ---------- */
-  function askAI(messages) {
-    return fetch("https://text.pollinations.ai/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "openai", messages: messages })
-    }).then(function (r) {
-      if (!r.ok) { throw new Error("Server error " + r.status); }
-      return r.json();
-    }).then(function (d) {
-      return d.choices[0].message.content;
-    });
-  }
+        /* ---------- Navigation ---------- */
+        var navButtons = document.querySelectorAll("#nav button, nav button, aside button[data-view]");
+        // Let's wire sidebar nav buttons properly
+        var navMap = {
+            'nav-chat': 'chat',
+            'nav-website': 'web',
+            'nav-image': 'image',
+            'nav-code': 'code'
+        };
 
-  /* ---------- Chat ---------- */
-  function addMsg(role, text, isErr) {
-    var d = document.createElement("div");
-    d.className = "msg " + (role === "user" ? "user" : "bot") + (isErr ? " err" : "");
-    d.textContent = text; // textContent: HTML kabhi execute nahi hoga
-    $("chatBox").appendChild(d);
-    $("chatBox").scrollTop = $("chatBox").scrollHeight;
-    return d;
-  }
+        document.querySelectorAll('aside nav button, #nav button').forEach(function(b) {
+            // handled below
+        });
 
-  function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(history)); } catch (e) {}
-    renderRecent();
-  }
+        var tabBtns = document.querySelectorAll('.nav-btn');
+        tabBtns.forEach(function(b) {
+            b.addEventListener('click', function() {
+                tabBtns.forEach(function(x) { x.classList.remove('bg-[#232637]', 'text-white'); x.classList.add('text-textmuted'); });
+                b.classList.add('bg-[#232637]', 'text-white');
+                b.classList.remove('text-textmuted');
+                document.querySelectorAll('.view').forEach(function(v) { v.classList.add('hidden'); v.classList.remove('show'); });
+                
+                var viewId = 'view-chat';
+                if(b.id === 'nav-website') viewId = 'view-web';
+                else if(b.id === 'nav-image') viewId = 'view-image';
+                else if(b.id === 'nav-code') viewId = 'view-code';
+                
+                $(viewId).classList.remove('hidden');
+                $(viewId).classList.add('show');
+            });
+        });
 
-  function renderRecent() {
-    var list = $("recentList");
-    list.textContent = "";
-    history.filter(function (m) { return m.role === "user"; }).slice(-8).reverse().forEach(function (m) {
-      var d = document.createElement("div");
-      d.textContent = m.content;
-      list.appendChild(d);
-    });
-  }
+        /* ---------- AI Call Engine ---------- */
+        function askAI(messages) {
+            var lang = $("language-select").value;
+            var systemPrompt = "You are Loona AI, an elite enterprise AI business executive and senior strategist. Reply strictly in " + lang + ".";
+            
+            if (userApiKey) {
+                // Use Gemini API if key is provided
+                return fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + userApiKey, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: messages.map(function(m) {
+                            return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
+                        })
+                    })
+                }).then(function(r) { return r.json(); }).then(function(d) {
+                    return d.candidates?.[0]?.content?.parts?.[0]?.text || "Maazrat, response process nahi ho saka.";
+                });
+            } else {
+                // Use robust free proxy
+                var apiMessages = [{ role: "system", content: systemPrompt }].concat(messages);
+                return fetch("https://text.pollinations.ai/openai", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ model: "openai", messages: apiMessages })
+                }).then(function (r) {
+                    if (!r.ok) { throw new Error("Server error " + r.status); }
+                    return r.json();
+                }).then(function (d) {
+                    return d.choices[0].message.content;
+                });
+            }
+        }
 
-  function load() {
-    try { history = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { history = []; }
-    $("chatBox").textContent = "";
-    if (!history.length) {
-      addMsg("bot", "Assalam o Alaikum! Main Loona AI hoon. Aap kya poochhna chahte hain?");
-    }
-    history.forEach(function (m) { addMsg(m.role, m.content); });
-    renderRecent();
-  }
+        /* ---------- Chat Rendering ---------- */
+        function addMsg(role, text, isErr) {
+            var banner = $("welcome-banner");
+            if (banner) banner.remove();
 
-  function send() {
-    var text = $("chatInput").value.trim();
-    if (!text) { return; }
-    $("chatInput").value = "";
-    addMsg("user", text);
-    history.push({ role: "user", content: text });
-    var wait = addMsg("bot", "Soch raha hoon...");
-    var msgs = [{ role: "system", content: SYSTEM }].concat(history.slice(-12));
-    askAI(msgs).then(function (reply) {
-      wait.textContent = reply;
-      history.push({ role: "assistant", content: reply });
-      save();
-    }).catch(function (e) {
-      wait.textContent = "Error: " + e.message + ". Internet check karein aur dobara try karein.";
-      wait.classList.add("err");
-    });
-  }
+            var d = document.createElement("div");
+            d.className = "msg " + (role === "user" ? "user ml-auto bg-accent text-white" : "bot mr-auto bg-panelbg border border-bordercolor text-textmain") + (isErr ? " border-red-500 text-red-300" : "");
+            d.style.cssText = "max-width:80%; padding:12px 16px; border-radius:14px; line-height:1.6; font-size:14px; word-wrap:break-word;";
+            
+            if (role === 'assistant' || role === 'bot') {
+                d.className += " markdown-body w-full";
+                d.innerHTML = typeof marked !== 'undefined' ? marked.parse(text) : text;
+            } else {
+                d.textContent = text;
+            }
 
-  $("sendBtn").addEventListener("click", send);
-  $("chatInput").addEventListener("keydown", function (e) { if (e.key === "Enter") { send(); } });
+            $("chatBox").appendChild(d);
+            $("chatBox").scrollTop = $("chatBox").scrollHeight;
+            return d;
+        }
 
-  function newChat() { history = []; save(); load(); }
-  $("newChat").addEventListener("click", newChat);
-  $("clearBtn").addEventListener("click", function () {
-    if (confirm("Saari chat history delete karni hai?")) {
-      try { localStorage.removeItem(KEY); } catch (e) {}
-      newChat();
-    }
-  });
+        function save() {
+            try { localStorage.setItem(KEY, JSON.stringify(history)); } catch (e) {}
+            renderRecent();
+        }
 
-  /* ---------- Voice input ---------- */
-  $("voiceBtn").addEventListener("click", function () {
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert("Is browser mein voice input support nahi hai. Chrome use karein."); return; }
-    var rec = new SR();
-    rec.lang = "ur-PK";
-    rec.onresult = function (e) { $("chatInput").value = e.results[0][0].transcript; };
-    rec.onerror = function () { alert("Mic access allow karein."); };
-    rec.start();
-  });
+        function renderRecent() {
+            var list = $("recentList");
+            list.textContent = "";
+            history.filter(function (m) { return m.role === "user"; }).slice(-8).reverse().forEach(function (m) {
+                var div = document.createElement("div");
+                div.textContent = m.content;
+                div.className = "p-2 rounded-lg text-xs text-textmuted cursor-pointer truncate hover:bg-[#1d2030] hover:text-white transition";
+                list.appendChild(div);
+            });
+        }
 
-  /* ---------- Website builder ---------- */
-  function cleanHTML(t) {
-    t = t.replace(/^```[a-z]*\s*/i, "").replace(/```\s*$/, "").trim();
-    var i = t.toLowerCase().indexOf("<!doctype");
-    return i > 0 ? t.slice(i) : t;
-  }
+        function load() {
+            try { history = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { history = []; }
+            if (history.length > 0) {
+                var banner = $("welcome-banner");
+                if (banner) banner.remove();
+                $("chatBox").textContent = "";
+                history.forEach(function (m) { addMsg(m.role, m.content); });
+            }
+            renderRecent();
+        }
 
-  function generateWebsite() {
-    var p = $("webPrompt").value.trim();
-    if (!p) { alert("Pehle prompt likhein."); return; }
-    $("genWebBtn").disabled = true;
-    $("genWebBtn").textContent = "Ban rahi hai...";
-    askAI([
-      { role: "system", content: "You output ONLY one complete, modern, responsive HTML file with inline CSS and JS. No explanations, no markdown fences." },
-      { role: "user", content: "Build a professional website: " + p }
-    ]).then(function (html) {
-      lastHTML = cleanHTML(html);
-      $("webFrame").srcdoc = lastHTML; // iframe mein alag chalta hai, main page ko nahi todta
-    }).catch(function (e) {
-      alert("Error: " + e.message);
-    }).then(function () {
-      $("genWebBtn").disabled = false;
-      $("genWebBtn").textContent = "Generate";
-    });
-  }
-  $("genWebBtn").addEventListener("click", generateWebsite);
+        function send() {
+            var text = $("chatInput").value.trim();
+            if (!text) { return; }
+            $("chatInput").value = "";
+            addMsg("user", text);
+            history.push({ role: "user", content: text });
+            
+            var wait = addMsg("bot", "Soch raha hoon...");
+            askAI(history.slice(-12)).then(function (reply) {
+                wait.remove();
+                addMsg("assistant", reply);
+                history.push({ role: "assistant", content: reply });
+                save();
+            }).catch(function (e) {
+                wait.textContent = "Error: " + e.message + ". Internet connection check karein.";
+                wait.classList.add("border-red-500", "text-red-300");
+            });
+        }
 
-  $("dlWebBtn").addEventListener("click", function () {
-    if (!lastHTML) { alert("Pehle website generate karein."); return; }
-    var blob = new Blob([lastHTML], { type: "text/html" });
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "index.html";
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-  });
+        $("sendBtn").addEventListener("click", send);
+        $("chatInput").addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
 
-  /* ---------- Image studio ---------- */
-  $("genImgBtn").addEventListener("click", function () {
-    var p = $("imgPrompt").value.trim() || "luxury tech branding";
-    var box = $("imgBox");
-    box.textContent = "Image ban rahi hai...";
-    var img = new Image();
-    img.onload = function () { box.textContent = ""; box.appendChild(img); };
-    img.onerror = function () { box.textContent = "Image load nahi hui, dobara try karein."; };
-    img.alt = p;
-    img.src = "https://image.pollinations.ai/prompt/" + encodeURIComponent(p) + "?nologo=true&seed=" + Date.now();
-  });
-  $("imgPrompt").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("genImgBtn").click(); } });
+        window.startNewChat = function() {
+            history = [];
+            try { localStorage.removeItem(KEY); } catch (e) {}
+            $("chatBox").innerHTML = `
+                <div id="welcome-banner" class="my-auto text-center py-12 px-4">
+                    <div class="w-16 h-16 rounded-2xl bg-accent mx-auto flex items-center justify-center shadow-xl shadow-accent/30 text-white text-2xl mb-4">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Assalam-o-Alaikum, Loona Admin!</h2>
+                    <p class="text-textmuted text-sm max-w-md mx-auto mb-6">Main aap ka enterprise AI assistant hoon. Aaj aap ki kis project ya business inquiry mein madad karoon?</p>
+                </div>
+            `;
+            renderRecent();
+        };
 
-  /* ---------- Code & scripts ---------- */
-  $("genCodeBtn").addEventListener("click", function () {
-    var p = $("codePrompt").value.trim();
-    if (!p) { alert("Pehle prompt likhein."); return; }
-    $("codeOut").textContent = "Code ban raha hai...";
-    askAI([
-      { role: "system", content: "You are a senior developer. Output working code with short comments." },
-      { role: "user", content: p }
-    ]).then(function (r) { $("codeOut").textContent = r; })
-      .catch(function (e) { $("codeOut").textContent = "Error: " + e.message; });
-  });
+        $("clearBtn").addEventListener("click", function () {
+            if (confirm("Saari chat history delete karni hai?")) {
+                window.startNewChat();
+            }
+        });
 
-  load();
-})();
-</script>
+        /* ---------- Voice Input ---------- */
+        $("voiceBtn").addEventListener("click", function () {
+            var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) { alert("Is browser mein voice input support nahi hai. Chrome browser use karein."); return; }
+            var rec = new SR();
+            rec.lang = "ur-PK";
+            rec.onresult = function (e) { $("chatInput").value = e.results[0][0].transcript; };
+            rec.onerror = function () { alert("Mic permission allow karein."); };
+            rec.start();
+        });
+
+        /* ---------- Website Builder ---------- */
+        function cleanHTML(t) {
+            t = t.replace(/^```[a-z]*\s*/i, "").replace(/```\s*$/, "").trim();
+            var i = t.toLowerCase().indexOf("<!doctype");
+            return i > 0 ? t.slice(i) : t;
+        }
+
+        $("genWebBtn").addEventListener("click", function () {
+            var p = $("webPrompt").value.trim();
+            if (!p) { alert("Pehle website ka prompt likhein."); return; }
+            $("genWebBtn").disabled = true;
+            $("genWebBtn").textContent = "Ban rahi hai...";
+            askAI([
+                { role: "system", content: "You output ONLY one complete, modern, responsive HTML file with inline Tailwind CSS and JS. No explanations, no markdown fences." },
+                { role: "user", content: "Build a professional website: " + p }
+            ]).then(function (html) {
+                lastHTML = cleanHTML(html);
+                $("webFrame").srcdoc = lastHTML;
+            }).catch(function (e) {
+                alert("Error: " + e.message);
+            }).then(function () {
+                $("genWebBtn").disabled = false;
+                $("genWebBtn").textContent = "Generate Code";
+            });
+        });
+
+        $("dlWebBtn").addEventListener("click", function () {
+            if (!lastHTML) { alert("Pehle website generate karein."); return; }
+            var blob = new Blob([lastHTML], { type: "text/html" });
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "index.html";
+            a.click();
+            setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+        });
+
+        /* ---------- Image Studio ---------- */
+        $("genImgBtn").addEventListener("click", function () {
+            var p = $("imgPrompt").value.trim() || "luxury tech branding";
+            var box = $("imgBox");
+            box.textContent = "Image ban rahi hai...";
+            var img = new Image();
+            img.onload = function () { box.textContent = ""; box.appendChild(img); };
+            img.onerror = function () { box.textContent = "Image load nahi hui, dobara try karein."; };
+            img.alt = p;
+            img.src = "https://image.pollinations.ai/prompt/" + encodeURIComponent(p) + "?nologo=true&seed=" + Date.now();
+        });
+
+        /* ---------- Code Studio ---------- */
+        $("genCodeBtn").addEventListener("click", function () {
+            var p = $("codePrompt").value.trim();
+            if (!p) { alert("Pehle prompt likhein."); return; }
+            $("codeOut").textContent = "Code ban raha hai...";
+            askAI([
+                { role: "system", content: "You are a senior enterprise software architect. Output clean, working code with concise comments." },
+                { role: "user", content: p }
+            ]).then(function (r) { $("codeOut").textContent = r; })
+              .catch(function (e) { $("codeOut").textContent = "Error: " + e.message; });
+        });
+
+        load();
+    })();
+    </script>
 </body>
 </html>
